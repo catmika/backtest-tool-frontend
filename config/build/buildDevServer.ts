@@ -1,0 +1,15 @@
+import type { Configuration as DevServerConfiguration } from "webpack-dev-server";
+
+import { IBuildOptions } from "./types/types";
+
+export const buildDevServer = (
+  options: IBuildOptions
+): DevServerConfiguration => {
+  return {
+    port: options.port ?? 3000,
+    open: true,
+    //Works only for dev server. For example if host static with nginx we would need to proxy index.html
+    historyApiFallback: true,
+    hot: true,
+  };
+};
