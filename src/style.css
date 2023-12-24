@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.counterWrapper {
+  display: flex;
+  gap: 20px;
+}

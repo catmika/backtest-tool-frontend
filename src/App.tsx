@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./App.css";
 import { Link, Outlet } from "react-router-dom";
 import mob from "@/assets/Mob.png";
 import tree from "@/assets/Tree.jpg";
@@ -10,7 +9,7 @@ const App = () => {
 
   return (
     <div>
-      <div>What's up doggy dawg</div>
+      <div className="underline font-bold text-3xl">What's up doggy dawg</div>
       <Link to="/about">About</Link>
       <Link to="/dashboard">Dashboard</Link>
       <div className="counterWrapper">

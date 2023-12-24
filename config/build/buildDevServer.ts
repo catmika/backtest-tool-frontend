@@ -7,9 +7,11 @@ export const buildDevServer = (
 ): DevServerConfiguration => {
   return {
     port: options.port ?? 3000,
+    static: options.paths.public,
     open: true,
     //Works only for dev server. For example if host static with nginx we would need to proxy index.html
     historyApiFallback: true,
+    compress: true,
     hot: true,
   };
 };
