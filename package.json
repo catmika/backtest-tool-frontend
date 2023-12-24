@@ -1,11 +1,8 @@
 {
-  "name": "backtestify",
+  "name": "frontend",
   "private": true,
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "keywords": [],
-  "author": "",
+  "author": "Maksym Andriiash",
   "license": "ISC",
   "scripts": {
     "start": "webpack serve --env mode=development",
