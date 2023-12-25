@@ -12,8 +12,8 @@ import path from "path";
 export const buildPlugins = (
   options: IBuildOptions
 ): Configuration["plugins"] => {
-  const isDev = options.mode === "development";
-  const isProd = options.mode === "production";
+  const isDev = options.mode === "dev";
+  const isProd = options.mode === "prod";
 
   const plugins: Configuration["plugins"] = [
     new HtmlWebpackPlugin({

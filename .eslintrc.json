@@ -15,6 +15,7 @@
     "react/prop-types": "off",
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-empty-function": "off",
-    "react/no-unescaped-entities": "off"
+    "react/no-unescaped-entities": "off",
+    "@typescript-eslint/no-unused-vars": "warn"
   }
 }

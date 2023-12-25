@@ -5,8 +5,8 @@
   "author": "Maksym Andriiash",
   "license": "ISC",
   "scripts": {
-    "start": "webpack serve --env mode=development",
-    "build:dev": "webpack --env mode=development",
+    "start": "webpack serve --env mode=dev",
+    "build:dev": "webpack --env mode=dev",
     "build:prod": "webpack --env mode=production",
     "prepare": "husky install",
     "lint": "eslint src/**/*.{js,jsx,ts,tsx,json}",
@@ -120,6 +120,7 @@
     "postcss": "^8.4.32",
     "postcss-loader": "^7.3.3",
     "prettier": "^3.1.1",
+    "prettier-plugin-tailwindcss": "^0.5.9",
     "react-refresh": "^0.14.0",
     "react-refresh-typescript": "^2.0.9",
     "style-loader": "^3.3.3",

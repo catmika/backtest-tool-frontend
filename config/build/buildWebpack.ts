@@ -8,10 +8,10 @@ import { IBuildOptions } from "./types/types";
 
 export const buildWebpack = (options: IBuildOptions): webpack.Configuration => {
   const { mode, paths } = options;
-  const isDev = mode === "development";
+  const isDev = mode === "dev";
 
   return {
-    mode: options.mode ?? "development",
+    mode: options.mode ?? "dev",
     entry: paths.entry,
     output: {
       path: paths.output,
