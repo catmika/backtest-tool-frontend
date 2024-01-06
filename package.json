@@ -5,8 +5,8 @@
   "author": "Maksym Andriiash",
   "license": "ISC",
   "scripts": {
-    "start": "webpack serve --env mode=dev",
-    "build:dev": "webpack --env mode=dev",
+    "start": "webpack serve --env mode=development",
+    "build:dev": "webpack --env mode=development",
     "build:prod": "webpack --env mode=production",
     "prepare": "husky install",
     "lint": "eslint src/**/*.{js,jsx,ts,tsx,json}",

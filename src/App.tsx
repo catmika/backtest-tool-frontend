@@ -1,4 +1,4 @@
-import React, { lazy } from 'react';
+import React, { Suspense, lazy } from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import Layout from './layout';
 
@@ -23,9 +23,11 @@ const App = () => {
   ]);
 
   return (
-    <div className='App'>
-      <RouterProvider router={router} />
-    </div>
+    <Suspense>
+      <div className='App'>
+        <RouterProvider router={router} />
+      </div>
+    </Suspense>
   );
 };
 
