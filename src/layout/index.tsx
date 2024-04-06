@@ -5,8 +5,6 @@ import { Loader } from '@/components/Loader';
 import { Sidebar } from '@/components/Sidebar';
 
 const Layout = () => {
-  const isLoading = false;
-
   return (
     <ProtectedRoute>
       <div className='flex h-full flex-1 flex-row'>
@@ -17,7 +15,9 @@ const Layout = () => {
             position: 'relative',
           }}
         >
-          <Suspense fallback={<Loader />}>{isLoading ? <Loader /> : <Outlet />}</Suspense>
+          <Suspense fallback={<Loader />}>
+            <Outlet />
+          </Suspense>
         </div>
       </div>
     </ProtectedRoute>

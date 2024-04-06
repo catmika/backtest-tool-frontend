@@ -1,7 +1,10 @@
 import React, { Suspense } from 'react';
+import { Provider } from 'react-redux';
 import { createRoot } from 'react-dom/client';
-import App from './App';
+
 import './style.css';
+import App from './App';
+import { store } from './store';
 import { Loader } from './components/Loader';
 
 const root = document.getElementById('root');
@@ -14,8 +17,10 @@ const container = createRoot(root);
 
 container.render(
   <React.StrictMode>
-    <Suspense fallback={<Loader />}>
-      <App />
-    </Suspense>
+    <Provider store={store}>
+      <Suspense fallback={<Loader />}>
+        <App />
+      </Suspense>
+    </Provider>
   </React.StrictMode>,
 );
