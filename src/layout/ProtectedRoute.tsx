@@ -1,25 +1,25 @@
-import React, { ReactNode, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { ReactNode } from 'react';
 import { Loader } from '../components/Loader';
+import { logout, useGetUserQuery } from '@/store/api';
+import { useAppDispatch } from '@/store';
+import { useNavigate } from 'react-router-dom';
 
 interface ProtectedRouteProps {
   children: ReactNode;
 }
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const token = 'token';
+  const { data, error } = useGetUserQuery();
+  const dispatch = useAppDispatch();
 
-  if (isLoading) {
-    return <Loader />;
+  if ((error as any)?.status === 401) {
+    dispatch(logout({ navigate }) as any);
   }
 
-  useEffect(() => {
-    if (!token) {
-      navigate('/login');
-    }
-  }, [token]);
+  if (!data) {
+    return <Loader />;
+  }
 
   return <>{children}</>;
 };
