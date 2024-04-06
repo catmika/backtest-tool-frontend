@@ -1,6 +1,4 @@
-import Facebook from '../assets/icons/facebook.svg';
-import Twitter from '../assets/icons/twitter.svg'
-import Linkedin from '../assets/icons/linkedin.svg'
+import Google from '../assets/icons/google.svg';
 
 export interface ISvg {
   icon?: string;
@@ -13,9 +11,7 @@ export interface ISvg {
 }
 
 const svgRegister = {
-  facebook: Facebook,
-  twitter: Twitter,
-  linkedin: Linkedin
+  google: Google,
 } as unknown as { [key: string]: React.FC<ISvg> };
 
 export default svgRegister;
