@@ -91,7 +91,7 @@ const Login = () => {
         use_fedcm_for_prompt: 'true',
       });
     }
-  }, [googleAuthRef.current]);
+  }, [googleAuthRef.current, isLoading]);
 
   if (isLoading) {
     return <Loader />;
