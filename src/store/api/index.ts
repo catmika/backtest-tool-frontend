@@ -49,7 +49,7 @@ const customBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryEr
 export const reset = createAction('reset');
 
 export const logout = createAsyncThunk('logout', async ({ navigate }: { navigate?: NavigateFunction }, thunkApi) => {
-  await fetch('/logout', {
+  await fetch(`${process.env.BACK_END_BASE_URL}/logout`, {
     method: 'POST',
     credentials: 'include',
   });

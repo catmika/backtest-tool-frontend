@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { Loader } from '../components/Loader';
 import { logout, useGetUserQuery } from '@/store/api';
 import { useAppDispatch } from '@/store';
@@ -13,9 +13,11 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { data, error } = useGetUserQuery();
   const dispatch = useAppDispatch();
 
-  if ((error as any)?.status === 401) {
-    dispatch(logout({ navigate }) as any);
-  }
+  useEffect(() => {
+    if ((error as any)?.status === 401) {
+      dispatch(logout({ navigate }) as any);
+    }
+  }, [error, dispatch, navigate]);
 
   if (!data) {
     return <Loader />;
