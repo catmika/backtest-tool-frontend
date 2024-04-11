@@ -1,62 +1,117 @@
-import { BaseQueryFn, FetchArgs, FetchBaseQueryError, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
-import { IUser } from '../slices/user.slice';
+import { BaseQueryFn, FetchArgs, FetchBaseQueryError, createApi } from '@reduxjs/toolkit/query/react';
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { NavigateFunction } from 'react-router-dom';
 
-const baseQuery = fetchBaseQuery({ baseUrl: process.env.BACK_END_BASE_URL });
+import { IUser } from '../slices/user.slice';
+import { showNotification } from '../slices/app.slice';
+import { baseQuery, displayNotification, sendRequest } from './utils';
+
+// export const isErrorWithMessage = (error: unknown): error is { data: { message: string } } => {
+//   return (
+//     typeof error === 'object' &&
+//     error !== null &&
+//     'data' in error &&
+//     typeof (error as any).data === 'object' &&
+//     (error as any).data !== null &&
+//     'message' in (error as any).data
+//   );
+// };
+
+// const baseQuery = fetchBaseQuery({ baseUrl: process.env.BACK_END_BASE_URL });
+
+// const customBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
+//   const options: FetchArgs = {
+//     ...extraOptions,
+//     ...(typeof args === 'string' ? { url: process.env.BACK_END_BASE_URL + args } : args),
+//     credentials: 'include',
+//   };
+//   const data = await baseQuery(options, api, extraOptions);
+
+//   if (data.error && data.error.status === 401) {
+//     const refreshData = await baseQuery(
+//       {
+//         url: '/refresh',
+//         method: 'POST',
+//         credentials: 'include',
+//       },
+//       api,
+//       extraOptions,
+//     );
+//     if (refreshData.error) {
+//       api.dispatch(logout());
+//       return refreshData;
+//     }
+//     const options: FetchArgs = {
+//       ...extraOptions,
+//       ...(typeof args === 'string' ? { url: process.env.BACK_END_BASE_URL + args } : args),
+//       credentials: 'include',
+//     };
+//     const retryData = await baseQuery(options, api, extraOptions);
+//     if (retryData.error) {
+//       if (isErrorWithMessage(data.error)) {
+//         api.dispatch(showNotification({ message: data.error.data.message, type: 'error' }));
+//       } else {
+//         api.dispatch(showNotification({ message: 'Something went wrong', type: 'error' }));
+//       }
+//       return { error: data.error };
+//     }
+//   }
+
+//   if (data.error) {
+//     if (isErrorWithMessage(data.error)) {
+//       api.dispatch(showNotification({ message: data.error.data.message, type: 'error' }));
+//     } else {
+//       api.dispatch(showNotification({ message: 'Something went wrong', type: 'error' }));
+//     }
+//     return { error: data.error };
+//   }
+
+//   return data;
+// };
 
 const customBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
-  const { dispatch } = api;
-  try {
-    const options: FetchArgs = {
-      ...extraOptions,
-      ...(typeof args === 'string' ? { url: process.env.BACK_END_BASE_URL + args } : args),
-      credentials: 'include',
-    };
-    const data = await baseQuery(options, api, extraOptions);
-    if (data.error) {
-      throw data.error;
+  const data = await sendRequest(args, api, extraOptions);
+
+  if (data.error && data.error.status === 401) {
+    const refreshData = await baseQuery({ url: '/refresh', method: 'POST', credentials: 'include' }, api, extraOptions);
+
+    if (refreshData.error) {
+      await api.dispatch(logout());
+      console.log(data.error);
+      displayNotification(api, data.error);
+      return refreshData;
     }
-    return data;
-  } catch (error: any) {
-    if (error.status === 401) {
-      try {
-        await baseQuery(
-          {
-            url: '/refresh',
-            method: 'POST',
-            credentials: 'include',
-          },
-          api,
-          extraOptions,
-        );
-        const options: FetchArgs = {
-          ...extraOptions,
-          ...(typeof args === 'string' ? { url: process.env.BACK_END_BASE_URL + args } : args),
-          credentials: 'include',
-        };
-        return await baseQuery(options, api, extraOptions);
-      } catch (refreshError) {
-        dispatch(logout({}));
-        throw refreshError;
-      }
+
+    const retryData = await sendRequest(args, api, extraOptions);
+
+    if (retryData.error) {
+      displayNotification(api, retryData.error);
+      return { error: retryData.error };
     }
-    throw error;
+
+    return retryData;
   }
+
+  if (data.error) {
+    displayNotification(api, data.error);
+    return { error: data.error };
+  }
+
+  return data;
 };
 
 export const reset = createAction('reset');
 
-export const logout = createAsyncThunk('logout', async ({ navigate }: { navigate?: NavigateFunction }, thunkApi) => {
+export const logout = createAsyncThunk('logout', async (navigate: NavigateFunction | undefined = undefined, thunkApi) => {
   await fetch(`${process.env.BACK_END_BASE_URL}/logout`, {
     method: 'POST',
     credentials: 'include',
   });
   thunkApi.dispatch(reset());
-  if (window.location.pathname !== '/login') {
-    navigate ? navigate('/login') : window.location.replace('/login');
+  if (window.location.pathname !== '/signin') {
+    navigate ? navigate('/signin') : window.location.replace('/signin');
   }
+  thunkApi.dispatch(showNotification({ message: 'Logged out', type: 'info' }));
 });
 
 export const api = createApi({
@@ -66,7 +121,7 @@ export const api = createApi({
     getUser: build.query<IUser, void>({
       query: () => '/user',
     }),
-    signin: build.mutation<void, { email: string; password: string }>({
+    signin: build.mutation<{ email: string; name: string }, { email: string; password: string }>({
       query: ({ email, password }) => ({
         url: '/signin',
         method: 'POST',
@@ -76,7 +131,7 @@ export const api = createApi({
         },
       }),
     }),
-    signinGoogle: build.mutation<void, { credential: string }>({
+    signinGoogle: build.mutation<{ email: string; name: string }, { credential: string }>({
       query: ({ credential }) => ({
         url: '/signin-google',
         method: 'POST',
@@ -120,5 +175,13 @@ export const api = createApi({
   }),
 });
 
-export const { useGetUserQuery, useSigninMutation, useSigninGoogleMutation, useSignupMutation, useForgotPasswordMutation, useResetPasswordMutation } =
-  api;
+export const {
+  useGetUserQuery,
+  useLazyGetUserQuery,
+
+  useSigninMutation,
+  useSigninGoogleMutation,
+  useSignupMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
+} = api;
