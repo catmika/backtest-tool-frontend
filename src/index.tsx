@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 import './style.css';
 import App from './App';
 import { store } from './store';
-import { Loader } from './components/Loader';
+import { Loader } from './legacy/components/Loader';
 
 const root = document.getElementById('root');
 

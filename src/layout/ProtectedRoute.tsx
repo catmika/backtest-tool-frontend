@@ -1,7 +1,6 @@
 import React, { ReactNode, useEffect } from 'react';
-import { Loader } from '../components/Loader';
-import { logout, useGetUserQuery } from '@/store/api';
-import { useAppDispatch } from '@/store';
+import { logout } from '@/store/api';
+import { useAppDispatch, useAppSelector } from '@/store';
 import { useNavigate } from 'react-router-dom';
 
 interface ProtectedRouteProps {
@@ -10,18 +9,14 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const navigate = useNavigate();
-  const { data, error } = useGetUserQuery();
   const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector((state) => state.user?.isAuthenticated);
 
   useEffect(() => {
-    if ((error as any)?.status === 401) {
-      dispatch(logout({ navigate }) as any);
+    if (!isAuthenticated) {
+      dispatch(logout(navigate) as any);
     }
-  }, [error, dispatch, navigate]);
-
-  if (!data) {
-    return <Loader />;
-  }
+  }, [isAuthenticated]);
 
   return <>{children}</>;
 };

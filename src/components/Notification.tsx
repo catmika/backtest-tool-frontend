@@ -1,33 +1,80 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-export const Notification = ({ message, onClose }: { message: string | null; onClose?: () => void }) => {
-  const [showNotification, setShowNotification] = useState(true);
+import { Close } from '@mui/icons-material';
+import { Alert, AlertTitle, Box, CircularProgress, IconButton, Zoom } from '@mui/material';
+
+import { useAppDispatch, useAppSelector } from '@/store';
+import { hideNotification } from '@/store/slices/app.slice';
+
+export const Notification = () => {
+  const dispatch = useAppDispatch();
+  const {
+    isNotificationVisible,
+    notificationData: { title, message, type, duration },
+  } = useAppSelector((state) => state.app);
+
+  const [timeLeft, setTimeLeft] = useState(duration);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      onClose && onClose();
-      setShowNotification(false);
-    }, 3000);
+    let timer: NodeJS.Timeout;
+    if (isNotificationVisible && duration) {
+      setTimeLeft(duration);
+      timer = setInterval(() => {
+        setTimeLeft((prevTimeLeft: number) => prevTimeLeft - 100);
+      }, 100);
+    }
+    return () => {
+      setTimeLeft(duration);
+      clearInterval(timer);
+    };
+  }, [isNotificationVisible]);
 
-    return () => clearTimeout(timer);
-  }, [onClose]);
+  useEffect(() => {
+    if (timeLeft === 0 && isNotificationVisible) {
+      dispatch(hideNotification());
+    }
+  }, [timeLeft, isNotificationVisible, dispatch]);
 
   return (
-    <div
-      className={`notification transition-opacity duration-300 ease-in-out ${
-        showNotification ? 'opacity-100' : 'hidden opacity-0'
-      } fixed bottom-16 right-16 bg-gray-800 p-16 text-white`}
-    >
-      {message}
-      <button
-        className='ml-2 text-sm'
-        onClick={() => {
-          onClose && onClose();
-          setShowNotification(false);
-        }}
-      >
-        ✕
-      </button>
-    </div>
+    <Box sx={{ width: '40%', position: 'fixed', zIndex: 100, left: '30%', top: '5%' }}>
+      <Zoom in={isNotificationVisible}>
+        <Alert
+          variant='outlined'
+          severity={type}
+          action={
+            <IconButton
+              aria-label='close'
+              color='inherit'
+              size='small'
+              onClick={() => {
+                dispatch(hideNotification());
+              }}
+            >
+              {title && <AlertTitle>{title}</AlertTitle>}
+              <Close fontSize='inherit' />
+              {duration ? (
+                <CircularProgress
+                  variant='determinate'
+                  value={(timeLeft / duration) * 100}
+                  size={20}
+                  thickness={4}
+                  sx={{
+                    color: 'primary.main',
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    marginTop: '-10px',
+                    marginLeft: '-10px',
+                  }}
+                />
+              ) : null}
+            </IconButton>
+          }
+          sx={{ mb: 2 }}
+        >
+          {message}
+        </Alert>
+      </Zoom>
+    </Box>
   );
 };
