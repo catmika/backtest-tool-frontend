@@ -1,20 +1,42 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { reset } from '../api';
 
+interface INotificationData {
+  title?: string;
+  message: string;
+  type: 'success' | 'info' | 'warning' | 'error';
+  duration?: number | null;
+}
+
 export interface IAppState {
-  isModalActive: boolean;
+  isNotificationVisible: boolean;
+  notificationData: INotificationData;
 }
 
 const initialState: IAppState = {
-  isModalActive: false,
+  isNotificationVisible: false,
+  notificationData: {
+    title: '',
+    message: '',
+    type: 'warning',
+    duration: 5000,
+  },
 };
 
 export const appSlice = createSlice({
   name: 'app',
   initialState,
   reducers: {
-    setIsModalActive: (state, action: PayloadAction<boolean>) => {
-      state.isModalActive = action.payload;
+    showNotification: (state, action: PayloadAction<INotificationData>) => {
+      state.isNotificationVisible = true;
+      state.notificationData = action.payload;
+      if (!action.payload.duration && action.payload.duration !== null) {
+        state.notificationData.duration = 5000;
+      }
+    },
+    hideNotification: (state) => {
+      state.isNotificationVisible = false;
+      state.notificationData = { ...state.notificationData, title: '', message: '', duration: 5000 };
     },
   },
   extraReducers: (builder) => {
@@ -24,6 +46,6 @@ export const appSlice = createSlice({
   },
 });
 
-export const { setIsModalActive } = appSlice.actions;
+export const { showNotification, hideNotification } = appSlice.actions;
 
 export const appReducer = appSlice.reducer;

@@ -1,45 +1,100 @@
-import { Button } from '@/components/Button';
+import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+import { Box, TextField, Typography, InputAdornment, IconButton } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+
 import { useAppDispatch } from '@/store';
 import { useResetPasswordMutation } from '@/store/api';
-import React, { FormEvent, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { showNotification } from '@/store/slices/app.slice';
+import { validatePassword } from '@/utils/helpers';
+import Button from '@/components/Button';
 
 const ResetPassword = () => {
-  const [resetPassword] = useResetPasswordMutation();
+  const [resetPassword, { isLoading }] = useResetPasswordMutation();
 
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
-  const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const token = queryParams.get('token') as string;
-
   const isPasswordSame = newPassword === confirmPassword;
 
-  const onSubmit = async (e: FormEvent, password: string) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      isPasswordSame && (await resetPassword({ token, newPassword }));
-    } catch (error) {
-      // dispatch(showErrorNotification)
-      console.log(error);
-    }
+      isPasswordSame && (await resetPassword({ token, newPassword }).unwrap());
+      navigate('/signin');
+      dispatch(showNotification({ message: 'Password has been succesfully updated', type: 'success' }));
+    } catch (error) {}
   };
-
   return (
-    <div className='flex items-center justify-center'>
-      <form onSubmit={(e) => onSubmit(e, newPassword)} className='flex flex-col gap-3'>
-        <h1 className='text-2xl'>Enter your new password:</h1>
-        <input className='text-black' type='password' placeholder='New password' onChange={(e) => setNewPassword(e.target.value)} />
-        <input className='text-black' type='password' placeholder='Confirm new password' onChange={(e) => setConfirmPassword(e.target.value)} />
-        {!isPasswordSame ? <p>Passwords must be the same</p> : <div className='h-6' />}
-        <Button type='submit' disabled={!isPasswordSame}>
+    <Box
+      sx={{
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 2,
+          minWidth: '30%',
+        }}
+        component='form'
+        onSubmit={onSubmit}
+      >
+        <Typography color='text.primary' variant='h5'>
+          Enter your new password:
+        </Typography>
+        <TextField
+          fullWidth
+          type={showPassword ? 'text' : 'password'}
+          placeholder='New password'
+          onChange={(e) => setNewPassword(e.target.value)}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position='end'>
+                <IconButton onClick={() => setShowPassword((p) => !p)} edge='end'>
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+        <TextField
+          fullWidth
+          type={showPassword ? 'text' : 'password'}
+          placeholder='Confirm new password'
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+        <Typography align='center' width={400} variant='body2' color='text.primary'>
+          {!isPasswordSame ? 'Passwords must be the same' : ''}
+        </Typography>
+        <Typography align='center' width={400} variant='body2' color='text.primary'>
+          {!validatePassword(newPassword) ? 'Password must be between 8 and 64 characters and contain at least one numeric digit (0-9)' : ''}
+        </Typography>
+        <Button
+          fullWidth
+          type='submit'
+          variant='contained'
+          color='primary'
+          isLoading={isLoading}
+          disabled={!isPasswordSame || !validatePassword(newPassword)}
+        >
           Confirm
         </Button>
-      </form>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

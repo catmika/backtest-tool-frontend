@@ -4,14 +4,17 @@ import { api } from '../api';
 
 export interface IUser {
   email: string;
+  name: string;
 }
 
 export interface IUserState {
-  user: IUser | null;
+  userData: IUser | null;
+  isAuthenticated: boolean;
 }
 
 const initialState: IUserState = {
-  user: null,
+  userData: null,
+  isAuthenticated: false,
 };
 
 const userSlice = createSlice({
@@ -22,10 +25,13 @@ const userSlice = createSlice({
     builder.addCase(reset, () => {
       return initialState;
     });
-    builder.addMatcher(api.endpoints.getUser.matchFulfilled, (state, action) => {
-      if (action.payload) {
-        state.user = action.payload;
-      }
+    builder.addMatcher(api.endpoints.signin.matchFulfilled, (state, action) => {
+      state.userData = action.payload;
+      state.isAuthenticated = true;
+    });
+    builder.addMatcher(api.endpoints.signinGoogle.matchFulfilled, (state, action) => {
+      state.userData = action.payload;
+      state.isAuthenticated = true;
     });
   },
 });

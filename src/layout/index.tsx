@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import ProtectedRoute from './ProtectedRoute';
 import { Outlet } from 'react-router-dom';
-import { Loader } from '@/components/Loader';
+import { Loader } from '@/legacy/components/Loader';
 import { Sidebar } from '@/components/Sidebar';
 
 const Layout = () => {
