@@ -77,7 +77,6 @@ const customBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryEr
 
     if (refreshData.error) {
       await api.dispatch(logout());
-      console.log(data.error);
       displayNotification(api, data.error);
       return refreshData;
     }

@@ -88,7 +88,7 @@ const ResetPassword = () => {
           type='submit'
           variant='contained'
           color='primary'
-          isLoading={!isLoading}
+          isLoading={isLoading}
           disabled={!isPasswordSame || !validatePassword(newPassword)}
         >
           Confirm
