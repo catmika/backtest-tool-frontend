@@ -31,11 +31,10 @@ const Signin = () => {
   const [forgotPassword, { isLoading: isLoadingForgotPassword }] = useForgotPasswordMutation();
 
   const dispatch = useAppDispatch();
+  const { isAuthenticated } = useAppSelector((state) => state.user);
   const navigate = useNavigate();
   const theme = useTheme();
   const location = useLocation();
-
-  const { isAuthenticated } = useAppSelector((state) => state.user);
 
   const [email, setEmail] = useState('');
   const [resetEmail, setResetEmail] = useState('');

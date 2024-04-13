@@ -27,13 +27,6 @@ const userSlice = createSlice({
     builder.addCase(reset, () => {
       return initialState;
     });
-    // builder.addCase(checkAuth.rejected, () => {
-    //   return initialState;
-    // }),
-    //   builder.addCase(checkAuth.fulfilled, (state, action) => {
-    //     state.userData = action.payload;
-    //     state.isAuthenticated = true;
-    //   });
     builder.addMatcher(api.endpoints.getUser.matchFulfilled, (state, action) => {
       state.userData = action.payload;
       state.isAuthenticated = true;
