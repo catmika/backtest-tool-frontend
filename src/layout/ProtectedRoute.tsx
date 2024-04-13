@@ -17,7 +17,6 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     if (!isAuthenticated) {
       getUser()
         .unwrap()
-        // .then(() => {})
         .catch(() => {
           navigate('/signin');
         });
