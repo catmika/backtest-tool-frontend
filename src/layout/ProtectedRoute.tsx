@@ -17,10 +17,10 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     if (!isAuthenticated) {
       getUser()
         .unwrap()
-        .then(() => {
+        // .then(() => {})
+        .catch(() => {
           navigate('/signin');
-        })
-        .catch(() => {});
+        });
     }
   }, []);
 
