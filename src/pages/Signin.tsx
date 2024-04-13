@@ -18,22 +18,24 @@ import {
 import { LockOutlined, Visibility, VisibilityOff } from '@mui/icons-material';
 
 import { useAppDispatch, useAppSelector } from '@/store';
-import { useSigninMutation, useSigninGoogleMutation, useSignupMutation, useForgotPasswordMutation } from '@/store/api';
+import { useSigninMutation, useSigninGoogleMutation, useSignupMutation, useForgotPasswordMutation, useLazyGetUserQuery } from '@/store/api';
 import { validateEmail, validatePassword } from '@/utils/helpers';
 import { showNotification } from '@/store/slices/app.slice';
 import Button from '@/components/Button';
 
 const Signin = () => {
+  const [getUser] = useLazyGetUserQuery();
   const [signin, { isLoading: isLoadingSignin }] = useSigninMutation();
   const [signinGoogle, { isLoading: isLoadingSigninGoogle }] = useSigninGoogleMutation();
   const [signup, { isLoading: isLoadingSignup }] = useSignupMutation();
   const [forgotPassword, { isLoading: isLoadingForgotPassword }] = useForgotPasswordMutation();
 
   const dispatch = useAppDispatch();
-  const isAuthenticated = useAppSelector((state) => state.user.isAuthenticated);
   const navigate = useNavigate();
   const theme = useTheme();
   const location = useLocation();
+
+  const { isAuthenticated } = useAppSelector((state) => state.user);
 
   const [email, setEmail] = useState('');
   const [resetEmail, setResetEmail] = useState('');
@@ -121,10 +123,17 @@ const Signin = () => {
   }, [googleAuthRef.current, theme]);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (!isAuthenticated) {
+      getUser()
+        .unwrap()
+        .then(() => {
+          navigate('/about');
+        })
+        .catch(() => {});
+    } else {
       navigate('/about');
     }
-  }, [isAuthenticated]);
+  }, []);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
