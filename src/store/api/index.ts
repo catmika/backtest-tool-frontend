@@ -5,7 +5,6 @@ import { NavigateFunction } from 'react-router-dom';
 import { IUser } from '../slices/user.slice';
 import { showNotification } from '../slices/app.slice';
 import { baseQuery, displayNotification, sendRequest } from './utils';
-import { RootState } from '..';
 
 const customBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
   const data = await sendRequest(args, api, extraOptions);
