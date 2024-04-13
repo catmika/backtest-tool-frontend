@@ -5,69 +5,7 @@ import { NavigateFunction } from 'react-router-dom';
 import { IUser } from '../slices/user.slice';
 import { showNotification } from '../slices/app.slice';
 import { baseQuery, displayNotification, sendRequest } from './utils';
-
-// export const isErrorWithMessage = (error: unknown): error is { data: { message: string } } => {
-//   return (
-//     typeof error === 'object' &&
-//     error !== null &&
-//     'data' in error &&
-//     typeof (error as any).data === 'object' &&
-//     (error as any).data !== null &&
-//     'message' in (error as any).data
-//   );
-// };
-
-// const baseQuery = fetchBaseQuery({ baseUrl: process.env.BACK_END_BASE_URL });
-
-// const customBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
-//   const options: FetchArgs = {
-//     ...extraOptions,
-//     ...(typeof args === 'string' ? { url: process.env.BACK_END_BASE_URL + args } : args),
-//     credentials: 'include',
-//   };
-//   const data = await baseQuery(options, api, extraOptions);
-
-//   if (data.error && data.error.status === 401) {
-//     const refreshData = await baseQuery(
-//       {
-//         url: '/refresh',
-//         method: 'POST',
-//         credentials: 'include',
-//       },
-//       api,
-//       extraOptions,
-//     );
-//     if (refreshData.error) {
-//       api.dispatch(logout());
-//       return refreshData;
-//     }
-//     const options: FetchArgs = {
-//       ...extraOptions,
-//       ...(typeof args === 'string' ? { url: process.env.BACK_END_BASE_URL + args } : args),
-//       credentials: 'include',
-//     };
-//     const retryData = await baseQuery(options, api, extraOptions);
-//     if (retryData.error) {
-//       if (isErrorWithMessage(data.error)) {
-//         api.dispatch(showNotification({ message: data.error.data.message, type: 'error' }));
-//       } else {
-//         api.dispatch(showNotification({ message: 'Something went wrong', type: 'error' }));
-//       }
-//       return { error: data.error };
-//     }
-//   }
-
-//   if (data.error) {
-//     if (isErrorWithMessage(data.error)) {
-//       api.dispatch(showNotification({ message: data.error.data.message, type: 'error' }));
-//     } else {
-//       api.dispatch(showNotification({ message: 'Something went wrong', type: 'error' }));
-//     }
-//     return { error: data.error };
-//   }
-
-//   return data;
-// };
+import { RootState } from '..';
 
 const customBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
   const data = await sendRequest(args, api, extraOptions);
@@ -102,15 +40,19 @@ const customBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryEr
 export const reset = createAction('reset');
 
 export const logout = createAsyncThunk('logout', async (navigate: NavigateFunction | undefined = undefined, thunkApi) => {
-  await fetch(`${process.env.BACK_END_BASE_URL}/logout`, {
-    method: 'POST',
-    credentials: 'include',
-  });
-  thunkApi.dispatch(reset());
-  if (window.location.pathname !== '/signin') {
-    navigate ? navigate('/signin') : window.location.replace('/signin');
+  try {
+    await fetch(`${process.env.BACK_END_BASE_URL}/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+    thunkApi.dispatch(reset());
+    if (window.location.pathname !== '/signin') {
+      navigate ? navigate('/signin') : window.location.replace('/signin');
+    }
+  } catch (error) {
+    thunkApi.dispatch(showNotification({ message: 'Something went wrong', type: 'error' }));
+    thunkApi.dispatch(reset());
   }
-  thunkApi.dispatch(showNotification({ message: 'Logged out', type: 'info' }));
 });
 
 export const api = createApi({
@@ -175,7 +117,6 @@ export const api = createApi({
 });
 
 export const {
-  useGetUserQuery,
   useLazyGetUserQuery,
 
   useSigninMutation,

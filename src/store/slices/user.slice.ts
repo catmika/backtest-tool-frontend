@@ -10,11 +10,13 @@ export interface IUser {
 export interface IUserState {
   userData: IUser | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
 }
 
 const initialState: IUserState = {
   userData: null,
   isAuthenticated: false,
+  isLoading: false,
 };
 
 const userSlice = createSlice({
@@ -24,6 +26,17 @@ const userSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(reset, () => {
       return initialState;
+    });
+    // builder.addCase(checkAuth.rejected, () => {
+    //   return initialState;
+    // }),
+    //   builder.addCase(checkAuth.fulfilled, (state, action) => {
+    //     state.userData = action.payload;
+    //     state.isAuthenticated = true;
+    //   });
+    builder.addMatcher(api.endpoints.getUser.matchFulfilled, (state, action) => {
+      state.userData = action.payload;
+      state.isAuthenticated = true;
     });
     builder.addMatcher(api.endpoints.signin.matchFulfilled, (state, action) => {
       state.userData = action.payload;
