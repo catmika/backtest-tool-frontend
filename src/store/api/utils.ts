@@ -1,7 +1,5 @@
 import { FetchArgs, FetchBaseQueryError, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import { showNotification } from '../slices/app.slice';
-
 export const isFetchBaseQueryError = (error: unknown): error is FetchBaseQueryError => {
   return typeof error === 'object' && error !== null && 'status' in error;
 };
@@ -31,14 +29,4 @@ export async function sendRequest(args: string | FetchArgs, api: any, extraOptio
   };
 
   return await baseQuery(options, api, extraOptions);
-}
-
-export function displayNotification(api: any, error: any) {
-  if (isErrorWithMessage(error)) {
-    if (error.status !== 401) {
-      api.dispatch(showNotification({ message: error.data.message, type: 'error' }));
-    }
-  } else {
-    api.dispatch(showNotification({ message: 'Something went wrong', type: 'error' }));
-  }
 }
