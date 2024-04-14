@@ -20,7 +20,7 @@ export const Notification = () => {
     if (isNotificationVisible && duration) {
       setTimeLeft(duration);
       timer = setInterval(() => {
-        setTimeLeft((prevTimeLeft: number) => prevTimeLeft - 100);
+        setTimeLeft((prevTimeLeft) => prevTimeLeft && prevTimeLeft - 100);
       }, 100);
     }
     return () => {
@@ -55,7 +55,7 @@ export const Notification = () => {
               {duration ? (
                 <CircularProgress
                   variant='determinate'
-                  value={(timeLeft / duration) * 100}
+                  value={timeLeft ? (timeLeft / duration) * 100 : undefined}
                   size={20}
                   thickness={4}
                   sx={{

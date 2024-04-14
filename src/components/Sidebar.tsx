@@ -1,33 +1,58 @@
-import React, { Suspense, useState } from 'react';
+import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-
 import { useAppDispatch } from '@/store';
 import { logout } from '@/store/api';
-import Button from './Button';
+import { Box, Drawer, List, ListItem, ListItemButton, ListItemText, CircularProgress, Button, useTheme } from '@mui/material';
 
 export const Sidebar = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
   const [isLoading, setIsLoading] = useState(false);
+
+  const theme = useTheme();
+
+  console.log(theme);
 
   const onLogout = async () => {
     setIsLoading(true);
-    await dispatch(logout(navigate) as any);
+    dispatch(logout(navigate));
     setIsLoading(false);
   };
 
   return (
-    <Suspense>
-      <div className='h-full w-56 bg-slate-950 p-6'>
-        <nav className='flex flex-col gap-2'>
-          <NavLink to='/about'>About</NavLink>
-          <NavLink to='/dashboard'>Dashboard</NavLink>
-        </nav>
-        <Button fullWidth variant='contained' isLoading={isLoading} onClick={onLogout}>
-          Logout
-        </Button>
-      </div>
-    </Suspense>
+    <Drawer
+      variant='permanent'
+      anchor='left'
+      sx={{
+        width: 240,
+        flexShrink: 0,
+        backgroundColor: 'tertiary',
+        '& .MuiDrawer-paper': {
+          width: 240,
+          boxSizing: 'border-box',
+          // backgroundColor: theme.palette.primary.main,
+        },
+      }}
+    >
+      <Box sx={{ height: '100%', overflow: 'auto', p: 2, display: 'flex', flexDirection: 'column' }}>
+        <List>
+          <ListItem disablePadding>
+            <ListItemButton component={NavLink} to='/about'>
+              <ListItemText primary='About' />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton component={NavLink} to='/dashboard'>
+              <ListItemText primary='Dashboard' />
+            </ListItemButton>
+          </ListItem>
+        </List>
+        <Box sx={{ mt: 'auto', mb: 1 }}>
+          <Button fullWidth variant='contained' color='primary' onClick={onLogout} disabled={isLoading}>
+            {isLoading ? <CircularProgress size={24} /> : 'Logout'}
+          </Button>
+        </Box>
+      </Box>
+    </Drawer>
   );
 };

@@ -4,7 +4,7 @@ import { NavigateFunction } from 'react-router-dom';
 
 import { IUser } from '../slices/user.slice';
 import { showNotification } from '../slices/app.slice';
-import { baseQuery, displayNotification, sendRequest } from './utils';
+import { baseQuery, sendRequest } from './utils';
 
 const customBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
   const data = await sendRequest(args, api, extraOptions);
@@ -14,14 +14,13 @@ const customBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryEr
 
     if (refreshData.error) {
       await api.dispatch(logout());
-      displayNotification(api, data.error);
       return refreshData;
     }
 
     const retryData = await sendRequest(args, api, extraOptions);
 
     if (retryData.error) {
-      displayNotification(api, retryData.error);
+      console.log('Retry error', retryData.error);
       return { error: retryData.error };
     }
 
@@ -29,7 +28,7 @@ const customBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryEr
   }
 
   if (data.error) {
-    displayNotification(api, data.error);
+    console.log('Error', data.error);
     return { error: data.error };
   }
 
