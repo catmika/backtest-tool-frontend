@@ -50,7 +50,7 @@ const Signin = () => {
   const onSignin = async () => {
     try {
       await signin({ email, password }).unwrap();
-      navigate('/about');
+      navigate('/library');
       dispatch(showNotification({ message: 'Succesfully logged in', type: 'success' }));
     } catch (error) {
       /* empty */
@@ -104,7 +104,7 @@ const Signin = () => {
         callback: async (res: any, error: any) => {
           try {
             await signinGoogle({ credential: res.credential }).unwrap();
-            navigate('/about');
+            navigate('/library');
             dispatch(showNotification({ message: 'Succesfully logged in', type: 'success' }));
           } catch (error) {
             /* empty */
@@ -126,11 +126,11 @@ const Signin = () => {
       getUser()
         .unwrap()
         .then(() => {
-          navigate('/about');
+          navigate('/library');
         })
         .catch(() => {});
     } else {
-      navigate('/about');
+      navigate('/library');
     }
   }, []);
 

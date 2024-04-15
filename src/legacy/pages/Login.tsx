@@ -30,7 +30,7 @@
 //     try {
 //       e.preventDefault();
 //       await signin({ email, password });
-//       navigate('/about');
+//       navigate('/library');
 //     } catch (error) {
 //       console.log(error);
 //       // dispatch(showErrorNotification);
@@ -76,7 +76,7 @@
 //         callback: async (res: any, error: any) => {
 //           try {
 //             await signinGoogle({ credential: res.credential });
-//             navigate('/about');
+//             navigate('/library');
 //             console.log(error);
 //           } catch (error) {
 //             // dispatch(showErrorNotification)
@@ -98,7 +98,7 @@
 //   }
 
 //   if (data) {
-//     navigate('/about');
+//     navigate('/library');
 //   }
 
 //   return (

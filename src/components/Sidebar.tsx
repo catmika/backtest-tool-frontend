@@ -37,13 +37,18 @@ export const Sidebar = () => {
       <Box sx={{ height: '100%', overflow: 'auto', p: 2, display: 'flex', flexDirection: 'column' }}>
         <List>
           <ListItem disablePadding>
-            <ListItemButton component={NavLink} to='/about'>
-              <ListItemText primary='About' />
+            <ListItemButton component={NavLink} to='/library'>
+              <ListItemText primary='Library' />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
             <ListItemButton component={NavLink} to='/dashboard'>
               <ListItemText primary='Dashboard' />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton component={NavLink} to='/lab'>
+              <ListItemText primary='Lab' />
             </ListItemButton>
           </ListItem>
         </List>
