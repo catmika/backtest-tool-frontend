@@ -4,8 +4,9 @@ import { CssBaseline, PaletteMode, Switch, ThemeProvider, createTheme, useMediaQ
 import Layout from './layout';
 import { Notification } from './components/Notification';
 
-const About = lazy(() => import('@/pages/About'));
+const Library = lazy(() => import('@/pages/Library'));
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
+const Lab = lazy(() => import('@/pages/Lab'));
 const Signin = lazy(() => import('@/pages/Signin'));
 const ResetPassword = lazy(() => import('@/pages/ResetPassword'));
 
@@ -32,8 +33,9 @@ const App = () => {
       path: '/',
       element: <Layout />,
       children: [
-        { path: '/about', element: <About /> },
+        { path: '/library', element: <Library /> },
         { path: '/dashboard', element: <Dashboard /> },
+        { path: '/lab', element: <Lab /> },
       ],
     },
     {
