@@ -1,8 +1,11 @@
-import React, { lazy, useMemo, useState } from 'react';
+import React, { lazy, useMemo } from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { CssBaseline, PaletteMode, Switch, ThemeProvider, createTheme, useMediaQuery } from '@mui/material';
+
+import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+
 import Layout from './layout';
 import { Notification } from './components/Notification';
+import { useAppSelector } from './store';
 
 const Library = lazy(() => import('@/pages/Library'));
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
@@ -11,8 +14,7 @@ const Signin = lazy(() => import('@/pages/Signin'));
 const ResetPassword = lazy(() => import('@/pages/ResetPassword'));
 
 const App = () => {
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const [mode, setMode] = useState<PaletteMode | undefined>(prefersDarkMode ? 'dark' : 'light');
+  const { mode } = useAppSelector((state) => state.app);
 
   const theme = useMemo(
     () =>
@@ -21,12 +23,8 @@ const App = () => {
           mode,
         },
       }),
-    [prefersDarkMode, mode],
+    [mode],
   );
-
-  const handleThemeChange = () => {
-    setMode(theme.palette.mode === 'dark' ? 'light' : 'dark');
-  };
 
   const router = createBrowserRouter([
     {
@@ -57,7 +55,6 @@ const App = () => {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Notification />
-        <Switch sx={{ position: 'absolute', top: 10, left: '90%', zIndex: 100 }} checked={mode === 'light'} onChange={handleThemeChange} />
         <RouterProvider router={router} />
       </ThemeProvider>
     </div>

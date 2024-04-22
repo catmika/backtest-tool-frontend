@@ -11,6 +11,7 @@ interface INotificationData {
 export interface IAppState {
   isNotificationVisible: boolean;
   notificationData: INotificationData;
+  mode: 'dark' | 'light';
 }
 
 const initialState: IAppState = {
@@ -21,6 +22,7 @@ const initialState: IAppState = {
     type: 'warning',
     duration: 5000,
   },
+  mode: 'dark',
 };
 
 export const appSlice = createSlice({
@@ -38,6 +40,9 @@ export const appSlice = createSlice({
       state.isNotificationVisible = false;
       state.notificationData = { ...state.notificationData, title: '', message: '', duration: 5000 };
     },
+    setMode: (state, action: PayloadAction<'dark' | 'light'>) => {
+      state.mode = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(reset, () => {
@@ -46,6 +51,6 @@ export const appSlice = createSlice({
   },
 });
 
-export const { showNotification, hideNotification } = appSlice.actions;
+export const { showNotification, hideNotification, setMode } = appSlice.actions;
 
 export const appReducer = appSlice.reducer;

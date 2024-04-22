@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import ProtectedRoute from './ProtectedRoute';
 import { Outlet } from 'react-router-dom';
-import { Loader } from '@/legacy/components/Loader';
+import { BackdropLoader } from '@/components/BackdropLoader';
 import { Sidebar } from '@/components/Sidebar';
 
 const Layout = () => {
@@ -12,10 +12,11 @@ const Layout = () => {
         <div
           style={{
             width: 'calc(100vw - 224px)',
+            padding: 15,
             position: 'relative',
           }}
         >
-          <Suspense fallback={<Loader />}>
+          <Suspense fallback={<BackdropLoader />}>
             <Outlet />
           </Suspense>
         </div>

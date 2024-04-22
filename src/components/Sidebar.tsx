@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '@/store';
+
+import { Box, Drawer, List, ListItem, ListItemButton, ListItemText, CircularProgress, Button, useTheme, useMediaQuery, Switch } from '@mui/material';
+
+import { useAppDispatch, useAppSelector } from '@/store';
 import { logout } from '@/store/api';
-import { Box, Drawer, List, ListItem, ListItemButton, ListItemText, CircularProgress, Button, useTheme } from '@mui/material';
+import { setMode } from '@/store/slices/app.slice';
 
 export const Sidebar = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+
+  const { mode } = useAppSelector((state) => state.app);
 
   const theme = useTheme();
 
@@ -18,6 +23,16 @@ export const Sidebar = () => {
     dispatch(logout(navigate));
     setIsLoading(false);
   };
+
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
+  const handleThemeChange = () => {
+    dispatch(setMode(theme.palette.mode === 'dark' ? 'light' : 'dark'));
+  };
+
+  useEffect(() => {
+    dispatch(setMode(prefersDarkMode ? 'dark' : 'light'));
+  }, [prefersDarkMode]);
 
   return (
     <Drawer
@@ -34,7 +49,9 @@ export const Sidebar = () => {
         },
       }}
     >
-      <Box sx={{ height: '100%', overflow: 'auto', p: 2, display: 'flex', flexDirection: 'column' }}>
+      <Switch sx={{ position: 'absolute', top: 10, right: 0, zIndex: 100 }} checked={mode === 'light'} onChange={handleThemeChange} />
+
+      <Box sx={{ height: '100%', overflow: 'auto', p: 2, pt: 5, display: 'flex', flexDirection: 'column' }}>
         <List>
           <ListItem disablePadding>
             <ListItemButton component={NavLink} to='/library'>

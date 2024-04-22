@@ -1,8 +1,8 @@
 import React, { ReactNode, useEffect } from 'react';
 import { useAppSelector } from '@/store';
 import { useNavigate } from 'react-router-dom';
-import { Loader } from '@/legacy/components/Loader';
 import { useLazyGetUserQuery } from '@/store/api';
+import { BackdropLoader } from '@/components/BackdropLoader';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -27,7 +27,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     return <>{children}</>;
   }
 
-  return <Loader />;
+  return <BackdropLoader />;
 };
 
 export default ProtectedRoute;
