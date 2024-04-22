@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 import './style.css';
 import App from './App';
 import { store } from './store';
-import { Loader } from './legacy/components/Loader';
+import { BackdropLoader } from './components/BackdropLoader';
 
 const root = document.getElementById('root');
 
@@ -18,7 +18,7 @@ const container = createRoot(root);
 container.render(
   <React.StrictMode>
     <Provider store={store}>
-      <Suspense fallback={<Loader />}>
+      <Suspense fallback={<BackdropLoader />}>
         <App />
       </Suspense>
     </Provider>
