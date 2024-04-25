@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import ProtectedRoute from './ProtectedRoute';
 import { Outlet } from 'react-router-dom';
 import { BackdropLoader } from '@/components/BackdropLoader';
-import { Sidebar } from '@/components/Sidebar';
+import { Sidebar } from '@/layout/Sidebar';
 
 const Layout = () => {
   return (

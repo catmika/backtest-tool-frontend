@@ -36,7 +36,7 @@ export const Notification = () => {
   }, [timeLeft, isNotificationVisible, dispatch]);
 
   return (
-    <Box sx={{ width: '40%', position: 'fixed', zIndex: 100, left: '30%', top: '5%' }}>
+    <Box sx={{ display: isNotificationVisible ? 'block' : 'none', width: '40%', position: 'fixed', zIndex: 100, left: '30%', top: '5%' }}>
       <Zoom in={isNotificationVisible}>
         <Alert
           variant='outlined'

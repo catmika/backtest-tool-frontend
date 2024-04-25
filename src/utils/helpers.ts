@@ -16,3 +16,10 @@ export const validateEmail = (email: string) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
+
+export const isOptionEqualToValue = (option: any, value: any) => {
+  if (typeof option === 'object' && typeof value === 'object') {
+    return option.value === value.value;
+  }
+  return option === value;
+};

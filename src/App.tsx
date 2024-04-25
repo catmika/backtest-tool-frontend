@@ -1,6 +1,8 @@
 import React, { lazy, useMemo } from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 
 import Layout from './layout';
@@ -9,7 +11,7 @@ import { useAppSelector } from './store';
 
 const Library = lazy(() => import('@/pages/Library'));
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
-const Lab = lazy(() => import('@/pages/Lab'));
+const LabInstrument = lazy(() => import('@/pages/LabInstrument'));
 const Signin = lazy(() => import('@/pages/Signin'));
 const ResetPassword = lazy(() => import('@/pages/ResetPassword'));
 
@@ -33,7 +35,7 @@ const App = () => {
       children: [
         { path: '/library', element: <Library /> },
         { path: '/dashboard', element: <Dashboard /> },
-        { path: '/lab', element: <Lab /> },
+        { path: '/instrument', element: <LabInstrument /> },
       ],
     },
     {
@@ -52,11 +54,13 @@ const App = () => {
 
   return (
     <div className='App'>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Notification />
-        <RouterProvider router={router} />
-      </ThemeProvider>
+      <LocalizationProvider dateAdapter={AdapterMoment}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Notification />
+          <RouterProvider router={router} />
+        </ThemeProvider>
+      </LocalizationProvider>
     </div>
   );
 };

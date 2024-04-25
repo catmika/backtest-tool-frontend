@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 
-import { Box, Drawer, List, ListItem, ListItemButton, ListItemText, CircularProgress, Button, useTheme, useMediaQuery, Switch } from '@mui/material';
+import { Box, Drawer, List, ListItemButton, ListItemText, CircularProgress, Button, useTheme, useMediaQuery, Switch, Collapse } from '@mui/material';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 
 import { useAppDispatch, useAppSelector } from '@/store';
 import { logout } from '@/store/api';
@@ -11,12 +12,11 @@ export const Sidebar = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [openLab, setOpenLab] = useState(true);
 
   const { mode } = useAppSelector((state) => state.app);
 
   const theme = useTheme();
-
-  console.log(theme);
 
   const onLogout = async () => {
     setIsLoading(true);
@@ -53,22 +53,28 @@ export const Sidebar = () => {
 
       <Box sx={{ height: '100%', overflow: 'auto', p: 2, pt: 5, display: 'flex', flexDirection: 'column' }}>
         <List>
-          <ListItem disablePadding>
-            <ListItemButton component={NavLink} to='/library'>
-              <ListItemText primary='Library' />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton component={NavLink} to='/dashboard'>
-              <ListItemText primary='Dashboard' />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton component={NavLink} to='/lab'>
-              <ListItemText primary='Lab' />
-            </ListItemButton>
-          </ListItem>
+          <ListItemButton component={NavLink} to='/library'>
+            <ListItemText primary='Library' />
+          </ListItemButton>
+
+          <ListItemButton component={NavLink} to='/dashboard'>
+            <ListItemText primary='Dashboard' />
+          </ListItemButton>
+
+          <ListItemButton onClick={() => setOpenLab((prev) => !prev)}>
+            <ListItemText primary='Lab' />
+            {openLab ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+
+          <Collapse in={openLab} timeout='auto' unmountOnExit>
+            <List component='div' disablePadding>
+              <ListItemButton component={NavLink} to='/instrument' sx={{ pl: 4 }}>
+                <ListItemText primary='Instrument' />
+              </ListItemButton>
+            </List>
+          </Collapse>
         </List>
+
         <Box sx={{ mt: 'auto', mb: 1 }}>
           <Button fullWidth variant='contained' color='primary' onClick={onLogout} disabled={isLoading}>
             {isLoading ? <CircularProgress size={24} /> : 'Logout'}
