@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { Box, TextField, Typography, InputAdornment, IconButton } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -16,6 +17,7 @@ const ResetPassword = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
 
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -30,7 +32,7 @@ const ResetPassword = () => {
     try {
       isPasswordSame && (await resetPassword({ token, newPassword }).unwrap());
       navigate('/signin');
-      dispatch(showNotification({ message: 'Password has been succesfully updated', type: 'success' }));
+      dispatch(showNotification({ message: t('Password has been succesfully updated'), type: 'success' }));
     } catch (error) {}
   };
   return (
@@ -54,12 +56,12 @@ const ResetPassword = () => {
         onSubmit={onSubmit}
       >
         <Typography color='text.primary' variant='h5'>
-          Enter your new password:
+          {t('Enter your new password:')}
         </Typography>
         <TextField
           fullWidth
           type={showPassword ? 'text' : 'password'}
-          placeholder='New password'
+          placeholder={t('New password')}
           onChange={(e) => setNewPassword(e.target.value)}
           InputProps={{
             endAdornment: (
@@ -74,14 +76,14 @@ const ResetPassword = () => {
         <TextField
           fullWidth
           type={showPassword ? 'text' : 'password'}
-          placeholder='Confirm new password'
+          placeholder={t('Confirm new password')}
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
         <Typography align='center' width={400} variant='body2' color='text.primary'>
-          {!isPasswordSame ? 'Passwords must be the same' : ''}
+          {!isPasswordSame ? t('Passwords must be the same') : ''}
         </Typography>
         <Typography align='center' width={400} variant='body2' color='text.primary'>
-          {!validatePassword(newPassword) ? 'Password must be between 8 and 64 characters and contain at least one numeric digit (0-9)' : ''}
+          {!validatePassword(newPassword) ? t('Password must be between 8 and 64 characters and contain at least one numeric digit (0-9)') : ''}
         </Typography>
         <Button
           fullWidth
@@ -91,7 +93,7 @@ const ResetPassword = () => {
           isLoading={isLoading}
           disabled={!isPasswordSame || !validatePassword(newPassword)}
         >
-          Confirm
+          {t('Confirm')}
         </Button>
       </Box>
     </Box>
