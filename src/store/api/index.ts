@@ -1,6 +1,7 @@
 import { BaseQueryFn, FetchArgs, FetchBaseQueryError, createApi } from '@reduxjs/toolkit/query/react';
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { NavigateFunction } from 'react-router-dom';
+import i18n from '../../i18n';
 
 import { IUser } from '../slices/user.slice';
 import { showNotification } from '../slices/app.slice';
@@ -48,7 +49,7 @@ export const logout = createAsyncThunk('logout', async (navigate: NavigateFuncti
       navigate ? navigate('/signin') : window.location.replace('/signin');
     }
   } catch (error) {
-    thunkApi.dispatch(showNotification({ message: 'Something went wrong', type: 'error' }));
+    thunkApi.dispatch(showNotification({ message: i18n.t('Something went wrong'), type: 'error' }));
     thunkApi.dispatch(reset());
   }
 });

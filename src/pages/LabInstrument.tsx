@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Grid from '@mui/material/Unstable_Grid2';
 import { Autocomplete, Chip, CircularProgress, Divider, TextField, Typography } from '@mui/material';
@@ -10,6 +11,8 @@ import { isOptionEqualToValue } from '@/utils/helpers';
 
 const LabInstrument = () => {
   const [getSymbols, { data, isFetching }] = useLazyGetSymbolsQuery();
+
+  const { t } = useTranslation();
 
   const [instrument, setInstrument] = useState<any>(null);
   const [symbols, setSymbols] = useState<string[]>([]);
@@ -44,7 +47,7 @@ const LabInstrument = () => {
     <Grid container spacing={2}>
       <Grid xs={12}>
         <Typography variant='body2' color='text.secondary' sx={{ ml: 1 }}>
-          Symbol
+          {t('Symbol')}
         </Typography>
         {/* <Chip label='Symbol' variant='filled' /> */}
       </Grid>
@@ -57,14 +60,14 @@ const LabInstrument = () => {
           options={markets}
           value={market}
           onChange={(_, v) => setMarket(v)}
-          renderInput={(params) => <TextField {...params} label='Market' />}
+          renderInput={(params) => <TextField {...params} label={t('Market')} />}
         />
       </Grid>
       <Grid xs={6}>
         <Autocomplete
           autoComplete
           disablePortal
-          noOptionsText='Start typing...'
+          noOptionsText={t('Start typing...')}
           id='symbol-select'
           filterOptions={(x) => x}
           loading={isFetching}
@@ -74,7 +77,7 @@ const LabInstrument = () => {
           renderInput={(params) => (
             <TextField
               {...params}
-              label='Symbol'
+              label={t('Symbol')}
               InputProps={{
                 ...params.InputProps,
                 endAdornment: (
@@ -93,14 +96,14 @@ const LabInstrument = () => {
       </Grid>
       <Grid xs={12}>
         <Typography variant='body2' color='text.secondary' sx={{ ml: 1 }}>
-          Time
+          {t('Time')}
         </Typography>
       </Grid>
       <Grid xs='auto'>
-        <DatePicker label='Start date' value={startDate} onChange={(newValue: any) => setStartDate(newValue)} />
+        <DatePicker label={t('Start date')} value={startDate} onChange={(newValue: any) => setStartDate(newValue)} />
       </Grid>
       <Grid xs='auto'>
-        <DatePicker label='End date' value={endDate} onChange={(newValue: any) => setEndDate(newValue)} />
+        <DatePicker label={t('End date')} value={endDate} onChange={(newValue: any) => setEndDate(newValue)} />
       </Grid>
     </Grid>
   );
