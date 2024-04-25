@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import {
   Modal,
@@ -14,13 +15,16 @@ import {
   InputAdornment,
   IconButton,
   CircularProgress,
+  Switch,
+  ToggleButtonGroup,
+  ToggleButton,
 } from '@mui/material';
 import { LockOutlined, Visibility, VisibilityOff } from '@mui/icons-material';
 
 import { useAppDispatch, useAppSelector } from '@/store';
 import { useSigninMutation, useSigninGoogleMutation, useSignupMutation, useForgotPasswordMutation, useLazyGetUserQuery } from '@/store/api';
 import { validateEmail, validatePassword } from '@/utils/helpers';
-import { showNotification } from '@/store/slices/app.slice';
+import { setMode, showNotification } from '@/store/slices/app.slice';
 import Button from '@/components/Button';
 
 const Signin = () => {
@@ -31,10 +35,13 @@ const Signin = () => {
   const [forgotPassword, { isLoading: isLoadingForgotPassword }] = useForgotPasswordMutation();
 
   const dispatch = useAppDispatch();
-  const { isAuthenticated } = useAppSelector((state) => state.user);
   const navigate = useNavigate();
   const theme = useTheme();
   const location = useLocation();
+  const { t, i18n } = useTranslation();
+
+  const { isAuthenticated } = useAppSelector((state) => state.user);
+  const { mode } = useAppSelector((state) => state.app);
 
   const [email, setEmail] = useState('');
   const [resetEmail, setResetEmail] = useState('');
@@ -47,11 +54,20 @@ const Signin = () => {
 
   const isLoading = isLoadingSignin || isLoadingSigninGoogle || isLoadingSignup || isLoadingForgotPassword;
 
+  const handleChangeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+    localStorage.setItem('language', lng);
+  };
+
+  const handleThemeChange = () => {
+    dispatch(setMode(theme.palette.mode === 'dark' ? 'light' : 'dark'));
+  };
+
   const onSignin = async () => {
     try {
       await signin({ email, password }).unwrap();
       navigate('/library');
-      dispatch(showNotification({ message: 'Succesfully logged in', type: 'success' }));
+      dispatch(showNotification({ message: t('Succesfully logged in'), type: 'success' }));
     } catch (error) {
       /* empty */
     }
@@ -61,17 +77,17 @@ const Signin = () => {
     e.preventDefault();
     const isEmailValid = validateEmail(email);
     if (!isEmailValid) {
-      dispatch(showNotification({ message: 'Invalid email', type: 'error' }));
+      dispatch(showNotification({ message: t('Invalid email'), type: 'error' }));
       return;
     }
     const isPasswordValid = validatePassword(password);
     if (!isPasswordValid) {
-      dispatch(showNotification({ message: 'Invalid password', type: 'error' }));
+      dispatch(showNotification({ message: t('Invalid password'), type: 'error' }));
       return;
     }
     try {
       await signup({ email, password }).unwrap();
-      dispatch(showNotification({ message: 'Confirmation link has been sent to your email', type: 'info' }));
+      dispatch(showNotification({ message: t('Confirmation link has been sent to your email'), type: 'info' }));
     } catch (error) {
       /* empty */
     }
@@ -81,12 +97,12 @@ const Signin = () => {
     onCloseForgotPasswordModal();
     const isEmailValid = validateEmail(email);
     if (!isEmailValid) {
-      dispatch(showNotification({ message: 'Invalid email', type: 'error' }));
+      dispatch(showNotification({ message: t('Invalid email'), type: 'error' }));
       return;
     }
     try {
       await forgotPassword({ email }).unwrap();
-      dispatch(showNotification({ message: 'Link for updating password has been sent to your email', type: 'info' }));
+      dispatch(showNotification({ message: t('Link for updating password has been sent to your email'), type: 'info' }));
     } catch (error) {
       /* empty */
     }
@@ -105,7 +121,7 @@ const Signin = () => {
           try {
             await signinGoogle({ credential: res.credential }).unwrap();
             navigate('/library');
-            dispatch(showNotification({ message: 'Succesfully logged in', type: 'success' }));
+            dispatch(showNotification({ message: t('Succesfully logged in'), type: 'success' }));
           } catch (error) {
             /* empty */
           }
@@ -138,12 +154,25 @@ const Signin = () => {
     const searchParams = new URLSearchParams(location.search);
     const isEmailBeenConfirmed = searchParams.get('emailConfirmed') === 'true';
     if (isEmailBeenConfirmed) {
-      dispatch(showNotification({ message: 'Email successfully confirmed. You can sign in now', type: 'success' }));
+      dispatch(showNotification({ message: t('Email successfully confirmed. You can sign in now'), type: 'success' }));
     }
   }, [location.search, dispatch]);
 
   return (
     <>
+      <ToggleButtonGroup
+        exclusive
+        size='small'
+        color='primary'
+        value={i18n.language}
+        onChange={(_, v) => handleChangeLanguage(v)}
+        aria-label='Language'
+        sx={{ position: 'absolute', top: 10, left: 10 }}
+      >
+        <ToggleButton value='ua'>🇺🇦</ToggleButton>
+        <ToggleButton value='en'>🇬🇧</ToggleButton>
+      </ToggleButtonGroup>
+      <Switch sx={{ position: 'absolute', top: 10, right: 10 }} checked={mode === 'light'} onChange={handleThemeChange} />
       <Box
         sx={{
           height: '100%',
@@ -164,11 +193,11 @@ const Signin = () => {
             <LockOutlined />
           </Avatar>
           <Typography sx={{ display: 'flex', gap: 2 }} color='text.secondary' component='h1' variant='h5'>
-            Sign in with
+            {t('Sign in with')}
             {!isLoading ? <div style={{ marginTop: -3 }} ref={googleAuthRef} /> : <CircularProgress size={38} />}
           </Typography>
           <Typography sx={{ mt: 1 }} color='text.secondary' component='h2' variant='h6'>
-            Or
+            {t('Or')}
           </Typography>
           <Box component='form' onSubmit={onSignup} sx={{ display: 'flex', flexDirection: 'column', mt: 1, minWidth: '40%' }}>
             <TextField
@@ -178,13 +207,13 @@ const Signin = () => {
               required
               fullWidth
               id='email'
-              label='Email Address'
+              label={t('Email Address')}
               name='email'
               autoComplete='email'
               autoFocus
             />
             <Tooltip
-              title='Password must be between 8 and 64 characters and contain at least one numeric digit (0-9)'
+              title={t('Password must be between 8 and 64 characters and contain at least one numeric digit (0-9)')}
               open={!validatePassword(password) && passwordRef.current === document.activeElement}
               placement='bottom'
               disableHoverListener
@@ -196,7 +225,7 @@ const Signin = () => {
                 required
                 fullWidth
                 name='password'
-                label='Password'
+                label={t('Password')}
                 type={showPassword ? 'text' : 'password'}
                 id='password'
                 autoComplete='current-password'
@@ -221,7 +250,7 @@ const Signin = () => {
                   variant='outlined'
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  Sign In
+                  {t('Sign In')}
                 </Button>
               </Grid>
               <Grid item>
@@ -232,17 +261,17 @@ const Signin = () => {
                   variant='contained'
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  Sign Up
+                  {t('Sign Up')}
                 </Button>
               </Grid>
             </Grid>
             <Button onClick={() => setOpenForgotPasswordModal(true)} variant='text' disabled={isLoading}>
-              Forgot password?
+              {t('Forgot password?')}
             </Button>
           </Box>
         </Box>
         <Typography sx={{ mt: 8, mb: 4 }} variant='body2' color='text.secondary' align='center'>
-          {'Copyright © '}
+          {t('Copyright ©')}
           <Link sx={{ mr: 1 }} color='text.secondary' href='mailto:mikatradingtoolkit@gmail.com'>
             Mika Cat Trading Toolkit
           </Link>
@@ -252,13 +281,13 @@ const Signin = () => {
       <Modal open={openForgotPasswordModal} onClose={onCloseForgotPasswordModal}>
         <Box sx={{ position: 'absolute', top: '35%', left: '30%', width: '40%', p: 4, bgcolor: 'background.paper' }}>
           <Typography component='h3' variant='h6' color='text.secondary'>
-            Enter your email
+            {t('Enter your email')}
           </Typography>
           <TextField
             required
             fullWidth
             margin='normal'
-            label='Email Address'
+            label={t('Email Address')}
             name='email'
             autoComplete='email'
             sx={{ mb: 3 }}
@@ -271,7 +300,7 @@ const Signin = () => {
             isLoading={isLoadingForgotPassword}
             onClick={() => onResetPassword(resetEmail)}
           >
-            {validateEmail(resetEmail) ? 'Send resetting password link' : 'Enter valid email'}
+            {validateEmail(resetEmail) ? t('Send resetting password link') : t('Enter valid email')}
           </Button>
         </Box>
       </Modal>
