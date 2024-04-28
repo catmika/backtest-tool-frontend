@@ -36,7 +36,7 @@ export const Sidebar = () => {
 
   const onLogout = async () => {
     setIsLoading(true);
-    dispatch(logout(navigate));
+    await dispatch(logout(navigate));
     setIsLoading(false);
   };
 
