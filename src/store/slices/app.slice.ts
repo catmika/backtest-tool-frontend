@@ -41,6 +41,7 @@ export const appSlice = createSlice({
       state.notificationData = { ...state.notificationData, title: '', message: '', duration: 5000 };
     },
     setMode: (state, action: PayloadAction<'dark' | 'light'>) => {
+      localStorage.setItem('mode', action.payload);
       state.mode = action.payload;
     },
   },
