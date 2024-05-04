@@ -27,7 +27,6 @@ export const Sidebar = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-  const theme = useTheme();
 
   const { mode } = useAppSelector((state) => state.app);
 
@@ -40,20 +39,14 @@ export const Sidebar = () => {
     setIsLoading(false);
   };
 
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-
   const handleChangeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
     localStorage.setItem('language', lng);
   };
 
   const handleThemeChange = () => {
-    dispatch(setMode(theme.palette.mode === 'dark' ? 'light' : 'dark'));
+    dispatch(setMode(mode === 'light' ? 'dark' : 'light'));
   };
-
-  useEffect(() => {
-    dispatch(setMode(prefersDarkMode ? 'dark' : 'light'));
-  }, [prefersDarkMode]);
 
   return (
     <Drawer
@@ -79,8 +72,8 @@ export const Sidebar = () => {
         aria-label='Language'
         sx={{ position: 'absolute', top: 10, left: 10 }}
       >
-        <ToggleButton value='ua'>🇺🇦</ToggleButton>
-        <ToggleButton value='en'>🇬🇧</ToggleButton>
+        <ToggleButton value='ukUA'>🇺🇦</ToggleButton>
+        <ToggleButton value='enUS'>🇬🇧</ToggleButton>
       </ToggleButtonGroup>
       <Switch sx={{ position: 'absolute', top: 10, right: 0 }} checked={mode === 'light'} onChange={handleThemeChange} />
 

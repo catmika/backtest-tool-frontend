@@ -24,7 +24,7 @@ import { LockOutlined, Visibility, VisibilityOff } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { useSigninMutation, useSigninGoogleMutation, useSignupMutation, useForgotPasswordMutation, useLazyGetUserQuery } from '@/store/api';
 import { validateEmail, validatePassword } from '@/utils/helpers';
-import { setMode, showNotification } from '@/store/slices/app.slice';
+import { showNotification, setMode } from '@/store/slices/app.slice';
 import Button from '@/components/Button';
 
 const Signin = () => {
@@ -60,7 +60,7 @@ const Signin = () => {
   };
 
   const handleThemeChange = () => {
-    dispatch(setMode(theme.palette.mode === 'dark' ? 'light' : 'dark'));
+    dispatch(setMode(mode === 'light' ? 'dark' : 'light'));
   };
 
   const onSignin = async () => {
@@ -169,8 +169,8 @@ const Signin = () => {
         aria-label='Language'
         sx={{ position: 'absolute', top: 10, left: 10 }}
       >
-        <ToggleButton value='ua'>🇺🇦</ToggleButton>
-        <ToggleButton value='en'>🇬🇧</ToggleButton>
+        <ToggleButton value='ukUA'>🇺🇦</ToggleButton>
+        <ToggleButton value='enUS'>🇬🇧</ToggleButton>
       </ToggleButtonGroup>
       <Switch sx={{ position: 'absolute', top: 10, right: 10 }} checked={mode === 'light'} onChange={handleThemeChange} />
       <Box
