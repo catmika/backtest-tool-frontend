@@ -8,6 +8,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { TMarket, useLazyGetSymbolsQuery } from '@/store/api/symbol.api';
 import { MARKETS } from '@/utils/constants';
 import { isOptionEqualToValue } from '@/utils/helpers';
+import InstrumentSpecifics from './InstrumentSpecifics';
 
 const LabInstrument = () => {
   const [getSymbols, { data, isFetching }] = useLazyGetSymbolsQuery();
@@ -47,11 +48,11 @@ const LabInstrument = () => {
     <Grid container spacing={2}>
       <Grid xs={12}>
         <Typography variant='body2' color='text.secondary' sx={{ ml: 1 }}>
-          {t('Symbol')}
+          {t('Common settings')}
         </Typography>
         {/* <Chip label='Symbol' variant='filled' /> */}
       </Grid>
-      <Grid xs={6}>
+      <Grid xs={12} md={4} lg={2}>
         <Autocomplete
           autoComplete
           disablePortal
@@ -63,7 +64,7 @@ const LabInstrument = () => {
           renderInput={(params) => <TextField {...params} label={t('Market')} />}
         />
       </Grid>
-      <Grid xs={6}>
+      <Grid xs={12} md={4} lg={2}>
         <Autocomplete
           autoComplete
           disablePortal
@@ -91,19 +92,46 @@ const LabInstrument = () => {
           )}
         />
       </Grid>
+      <Grid xs={12} md={4} lg={2}>
+        <Autocomplete
+          autoComplete
+          disablePortal
+          isOptionEqualToValue={isOptionEqualToValue}
+          id='market-select'
+          options={instruments}
+          value={instrument}
+          onChange={(_, v) => setInstrument(v)}
+          renderInput={(params) => <TextField {...params} label={t('Instrument')} />}
+        />
+      </Grid>
+      <Grid xs={12} md={4} lg={2}>
+        <Autocomplete
+          autoComplete
+          disablePortal
+          isOptionEqualToValue={isOptionEqualToValue}
+          id='market-select'
+          options={instruments}
+          value={instrument}
+          onChange={(_, v) => setInstrument(v)}
+          renderInput={(params) => <TextField {...params} label={t('Timeframe')} />}
+        />
+      </Grid>
+      <Grid xs={12} md={4} lg={2}>
+        <DatePicker label={t('Start date')} value={startDate} onChange={(newValue: any) => setStartDate(newValue)} />
+      </Grid>
+      <Grid xs={12} md={4} lg={2}>
+        <DatePicker label={t('End date')} value={endDate} onChange={(newValue: any) => setEndDate(newValue)} />
+      </Grid>
       <Grid xs={12}>
         <Divider orientation='horizontal' flexItem />
       </Grid>
       <Grid xs={12}>
         <Typography variant='body2' color='text.secondary' sx={{ ml: 1 }}>
-          {t('Time')}
+          {t('Instrument specifics')}
         </Typography>
       </Grid>
       <Grid xs='auto'>
-        <DatePicker label={t('Start date')} value={startDate} onChange={(newValue: any) => setStartDate(newValue)} />
-      </Grid>
-      <Grid xs='auto'>
-        <DatePicker label={t('End date')} value={endDate} onChange={(newValue: any) => setEndDate(newValue)} />
+        <InstrumentSpecifics instrument={instrument} />
       </Grid>
     </Grid>
   );

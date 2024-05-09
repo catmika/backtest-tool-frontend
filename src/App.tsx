@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 
 const Library = lazy(() => import('@/pages/Library'));
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
-const LabInstrument = lazy(() => import('@/pages/LabInstrument'));
+const LabInstrument = lazy(() => import('@/pages/LabInstrument/index'));
 const Signin = lazy(() => import('@/pages/Signin'));
 const ResetPassword = lazy(() => import('@/pages/ResetPassword'));
 

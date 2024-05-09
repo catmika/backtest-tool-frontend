@@ -3,5 +3,7 @@ export const MARKETS = Object.freeze({
   STOCKS: 'stocks',
   CRYPTO: 'crypto',
   FOREX: 'forex',
-  BONDS: 'bonds',
+  ETF: 'ETF',
 });
+
+export const TIMEFRAMES = Object.freeze({});
