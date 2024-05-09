@@ -68,8 +68,10 @@ const Signin = () => {
       await signin({ email, password }).unwrap();
       navigate('/library');
       dispatch(showNotification({ message: t('Succesfully logged in'), type: 'success' }));
-    } catch (error) {
-      /* empty */
+    } catch (error: any) {
+      error.status === 500
+        ? dispatch(showNotification({ message: t('Something went wrong'), type: 'error' }))
+        : dispatch(showNotification({ message: t('Wrong email or password'), type: 'error' }));
     }
   };
 
