@@ -1,9 +1,62 @@
 export const MARKETS = Object.freeze({
-  INDICES: 'indices',
-  STOCKS: 'stocks',
-  CRYPTO: 'crypto',
-  FOREX: 'forex',
-  ETF: 'ETF',
-});
+  INDICES: { value: 'indices', label: 'Indices' },
+  STOCKS: { value: 'stocks', label: 'Stocks' },
+  CRYPTO: { value: 'cryptocurrencies', label: 'Crypto' },
+  FOREX: { value: 'forex_pairs', label: 'Forex' },
+  ETF: { value: 'etf', label: 'ETF' },
+  FUNDS: { value: 'funds', label: 'Funds' },
+  BONDS: { value: 'bonds', label: 'Bonds' },
+} as const);
 
-export const TIMEFRAMES = Object.freeze({});
+export const TIMEFRAMES = Object.freeze({
+  m1: '1min',
+  m5: '5min',
+  m15: '15min',
+  m30: '30min',
+  m45: '45min',
+  h1: '1h',
+  h2: '2h',
+  h4: '4h',
+  D: '1day',
+  W: '1week',
+  M: '1month',
+} as const);
+
+export const TIMEZONES = Object.freeze({
+  Exchange: 'Exchange',
+  'Pacific/Honolulu': 'GMT-10',
+  'America/Anchorage': 'GMT-09',
+  'America/Los_Angeles': 'GMT-08',
+  'America/Denver': 'GMT-07',
+  'America/Chicago': 'GMT-06',
+  'America/New_York': 'GMT-05',
+  'America/Caracas': 'GMT-04',
+  'America/Sao_Paulo': 'GMT-03',
+  'America/Noronha': 'GMT-02',
+  'Atlantic/Azores': 'GMT-01',
+  UTC: 'GMT',
+  'Europe/Paris': 'GMT+01',
+  'Europe/Helsinki': 'GMT+02',
+  'Europe/Moscow': 'GMT+03',
+  'Asia/Dubai': 'GMT+04',
+  'Asia/Karachi': 'GMT+05',
+  'Asia/Dhaka': 'GMT+06',
+  'Asia/Bangkok': 'GMT+07',
+  'Asia/Hong_Kong': 'GMT+08',
+  'Asia/Tokyo': 'GMT+09',
+  'Australia/Sydney': 'GMT+10',
+  'Pacific/Noumea': 'GMT+11',
+  'Pacific/Auckland': 'GMT+12',
+} as const);
+
+export const TIME_SESSIONS = Object.freeze([
+  { name: 'Asian session', start: '00:00', end: '09:00' },
+  { name: 'Asian range', start: '00:00', end: '04:00' },
+  { name: 'Asian Kill Zone', start: '00:00', end: '02:00' },
+  { name: 'Frankfurt Open', start: '06:00', end: '07:00' },
+  { name: 'London Kill Zone', start: '07:00', end: '10:00' },
+  { name: 'London session', start: '07:00', end: '16:00' },
+  { name: 'New York Kill Zone', start: '12:00', end: '15:00' },
+  { name: 'New York session', start: '12:00', end: '21:00' },
+  { name: 'London Close Kill Zone', start: '15:00', end: '17:00' },
+] as const);

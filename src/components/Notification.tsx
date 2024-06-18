@@ -39,7 +39,7 @@ export const Notification = () => {
     <Box sx={{ display: isNotificationVisible ? 'block' : 'none', width: '40%', position: 'fixed', zIndex: 100, left: '30%', top: '5%' }}>
       <Zoom in={isNotificationVisible}>
         <Alert
-          variant='outlined'
+          variant='standard'
           severity={type}
           action={
             <IconButton

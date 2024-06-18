@@ -1,17 +1,15 @@
-import { ModuleOptions } from "webpack";
-import MiniCssExtractPlugin from "mini-css-extract-plugin";
-import ReactRefreshTypeScript from "react-refresh-typescript";
+import { ModuleOptions } from 'webpack';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import ReactRefreshTypeScript from 'react-refresh-typescript';
 
-import { IBuildOptions } from "./types/types";
+import { IBuildOptions } from './types/types';
 
-export const buildLoaders = (
-  options: IBuildOptions
-): ModuleOptions["rules"] => {
-  const isDev = options.mode === "development";
+export const buildLoaders = (options: IBuildOptions): ModuleOptions['rules'] => {
+  const isDev = options.mode === 'development';
 
   const assetLoader = {
     test: /\.(png|jpg|jpeg|gif)$/i,
-    type: "asset/resource",
+    type: 'asset/resource',
   };
 
   const svgLoader = {
@@ -19,13 +17,11 @@ export const buildLoaders = (
     issuer: /\.[jt]sx?$/,
     use: [
       {
-        loader: "@svgr/webpack",
+        loader: '@svgr/webpack',
         options: {
           icon: true,
           svgoConfig: {
-            plugins: [
-              { name: "convertColors", params: { currentColor: true } },
-            ],
+            plugins: [{ name: 'convertColors', params: { currentColor: true } }],
           },
         },
       },
@@ -34,11 +30,7 @@ export const buildLoaders = (
 
   const cssLoader = {
     test: /\.css$/i,
-    use: [
-      isDev ? "style-loader" : MiniCssExtractPlugin.loader,
-      "css-loader",
-      "postcss-loader",
-    ],
+    use: [isDev ? 'style-loader' : MiniCssExtractPlugin.loader, 'css-loader'],
   };
 
   // const tsLoader = {
@@ -53,7 +45,7 @@ export const buildLoaders = (
     test: /\.tsx?$/,
     use: [
       {
-        loader: "ts-loader",
+        loader: 'ts-loader',
         options: {
           getCustomTransformers: () => ({
             before: [isDev && ReactRefreshTypeScript()].filter(Boolean),

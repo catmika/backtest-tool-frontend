@@ -10,12 +10,14 @@ interface INotificationData {
 
 export interface IAppState {
   isNotificationVisible: boolean;
+  isErrorHandled: boolean;
   notificationData: INotificationData;
   mode: 'dark' | 'light';
 }
 
 const initialState: IAppState = {
   isNotificationVisible: false,
+  isErrorHandled: false,
   notificationData: {
     title: '',
     message: '',
@@ -40,6 +42,9 @@ export const appSlice = createSlice({
       state.isNotificationVisible = false;
       state.notificationData = { ...state.notificationData, title: '', message: '', duration: 5000 };
     },
+    setIsErrorHandled: (state, action: PayloadAction<boolean>) => {
+      state.isErrorHandled = action.payload;
+    },
     setMode: (state, action: PayloadAction<'dark' | 'light'>) => {
       localStorage.setItem('mode', action.payload);
       state.mode = action.payload;
@@ -52,6 +57,6 @@ export const appSlice = createSlice({
   },
 });
 
-export const { showNotification, hideNotification, setMode } = appSlice.actions;
+export const { showNotification, hideNotification, setIsErrorHandled, setMode } = appSlice.actions;
 
 export const appReducer = appSlice.reducer;

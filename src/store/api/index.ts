@@ -4,10 +4,13 @@ import { NavigateFunction } from 'react-router-dom';
 import i18n from '../../i18n';
 
 import { IUser } from '../slices/user.slice';
-import { showNotification } from '../slices/app.slice';
+import { setIsErrorHandled, showNotification } from '../slices/app.slice';
 import { baseQuery, sendRequest } from './utils';
+import { RootState } from '..';
 
 const customBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
+  api.dispatch(setIsErrorHandled(false));
+
   const data = await sendRequest(args, api, extraOptions);
 
   if (data.error && data.error.status === 401) {
@@ -26,6 +29,13 @@ const customBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryEr
     }
 
     return retryData;
+  }
+
+  if (data.error && data.error.status === 500) {
+    const { app } = api.getState() as RootState;
+    if (!app.isErrorHandled) {
+      api.dispatch(showNotification({ message: i18n.t('Something went wrong'), type: 'error' }));
+    }
   }
 
   if (data.error) {

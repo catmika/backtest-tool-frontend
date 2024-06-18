@@ -25,15 +25,9 @@ import { useAppDispatch, useAppSelector } from '@/store';
 import { useSigninMutation, useSigninGoogleMutation, useSignupMutation, useForgotPasswordMutation, useLazyGetUserQuery } from '@/store/api';
 import { validateEmail, validatePassword } from '@/utils/helpers';
 import { showNotification, setMode } from '@/store/slices/app.slice';
-import Button from '@/components/Button';
+import { Button } from '@/components/Button';
 
 const Signin = () => {
-  const [getUser] = useLazyGetUserQuery();
-  const [signin, { isLoading: isLoadingSignin }] = useSigninMutation();
-  const [signinGoogle, { isLoading: isLoadingSigninGoogle }] = useSigninGoogleMutation();
-  const [signup, { isLoading: isLoadingSignup }] = useSignupMutation();
-  const [forgotPassword, { isLoading: isLoadingForgotPassword }] = useForgotPasswordMutation();
-
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -46,11 +40,17 @@ const Signin = () => {
   const [email, setEmail] = useState('');
   const [resetEmail, setResetEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [openForgotPasswordModal, setOpenForgotPasswordModal] = useState(false);
+  const [forgotPasswordModalOpen, setForgotPasswordModalOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const googleAuthRef = useRef(null);
   const passwordRef = useRef(null);
+
+  const [getUser] = useLazyGetUserQuery();
+  const [signin, { isLoading: isLoadingSignin }] = useSigninMutation();
+  const [signinGoogle, { isLoading: isLoadingSigninGoogle }] = useSigninGoogleMutation();
+  const [signup, { isLoading: isLoadingSignup }] = useSignupMutation();
+  const [forgotPassword, { isLoading: isLoadingForgotPassword }] = useForgotPasswordMutation();
 
   const isLoading = isLoadingSignin || isLoadingSigninGoogle || isLoadingSignup || isLoadingForgotPassword;
 
@@ -66,7 +66,7 @@ const Signin = () => {
   const onSignin = async () => {
     try {
       await signin({ email, password }).unwrap();
-      navigate('/library');
+      navigate('/');
       dispatch(showNotification({ message: t('Succesfully logged in'), type: 'success' }));
     } catch (error: any) {
       error.status === 500
@@ -112,7 +112,7 @@ const Signin = () => {
 
   const onCloseForgotPasswordModal = () => {
     setResetEmail('');
-    setOpenForgotPasswordModal(false);
+    setForgotPasswordModalOpen(false);
   };
 
   useEffect(() => {
@@ -122,7 +122,7 @@ const Signin = () => {
         callback: async (res: any, error: any) => {
           try {
             await signinGoogle({ credential: res.credential }).unwrap();
-            navigate('/library');
+            navigate('/');
             dispatch(showNotification({ message: t('Succesfully logged in'), type: 'success' }));
           } catch (error) {
             /* empty */
@@ -144,11 +144,11 @@ const Signin = () => {
       getUser()
         .unwrap()
         .then(() => {
-          navigate('/library');
+          navigate('/');
         })
         .catch(() => {});
     } else {
-      navigate('/library');
+      navigate('/');
     }
   }, []);
 
@@ -267,7 +267,7 @@ const Signin = () => {
                 </Button>
               </Grid>
             </Grid>
-            <Button onClick={() => setOpenForgotPasswordModal(true)} variant='text' disabled={isLoading}>
+            <Button onClick={() => setForgotPasswordModalOpen(true)} variant='text' disabled={isLoading}>
               {t('Forgot password?')}
             </Button>
           </Box>
@@ -280,8 +280,8 @@ const Signin = () => {
           {new Date().getFullYear()}
         </Typography>
       </Box>
-      <Modal open={openForgotPasswordModal} onClose={onCloseForgotPasswordModal}>
-        <Box sx={{ position: 'absolute', top: '35%', left: '30%', width: '40%', p: 4, bgcolor: 'background.paper' }}>
+      <Modal open={forgotPasswordModalOpen} onClose={onCloseForgotPasswordModal}>
+        <Box sx={{ ml: 'auto', mr: 'auto', mt: '35vh', minWidth: 330, maxWidth: 500, p: 4, borderRadius: 2, bgcolor: 'background.paper' }}>
           <Typography component='h3' variant='h6' color='text.secondary'>
             {t('Enter your email')}
           </Typography>
