@@ -56,7 +56,7 @@ const App = () => {
       path: '/',
       element: <Layout />,
       children: [
-        { path: '/library', element: <Library /> },
+        { path: '/', element: <Library /> },
         { path: '/dashboard', element: <Dashboard /> },
         { path: '/instrument', element: <LabInstrument /> },
       ],

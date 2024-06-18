@@ -23,3 +23,19 @@ export const isOptionEqualToValue = (option: any, value: any) => {
   }
   return option === value;
 };
+
+export const capitalizeFirstLetter = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+export const debounce = <T extends (...args: any[]) => any>(func: T, delay: number): ((...args: Parameters<T>) => void) => {
+  let timeoutId: NodeJS.Timeout;
+  return (...args: Parameters<T>): void => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+};

@@ -7,7 +7,7 @@ interface IButton extends ButtonProps {
   children?: ReactNode | string | number;
 }
 
-const Button: React.FC<IButton> = ({ children, isLoading, ...props }) => {
+export const Button: React.FC<IButton> = ({ children, isLoading, ...props }) => {
   return (
     <MuiButton {...props}>
       {isLoading && (
@@ -19,5 +19,3 @@ const Button: React.FC<IButton> = ({ children, isLoading, ...props }) => {
     </MuiButton>
   );
 };
-
-export default Button;

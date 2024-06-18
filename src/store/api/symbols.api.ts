@@ -1,12 +1,14 @@
 import { api } from '.';
 
-export type TMarket = 'indices' | 'stocks' | 'crypto' | 'forex' | 'bonds';
+export type TMarket = 'indices' | 'stocks' | 'cryptocurrencies' | 'forex_pairs' | 'etf';
+
+export type TMarketLabels = 'Indices' | 'Stocks' | 'Crypto' | 'Forex' | 'ETF';
 
 export interface ISymbol {
   shortName: string;
   fullName: string;
   market: TMarket;
-  exchange: string;
+  exchanges: string[];
 }
 
 export interface IPagination {
@@ -15,14 +17,12 @@ export interface IPagination {
   sortBy?: string;
   sortOrder?: string;
   search?: string;
-  market?: TMarket;
+  market?: string;
 }
-
-export const abortController = new AbortController();
 
 const symbolApi = api.injectEndpoints({
   endpoints: (build) => ({
-    getSymbols: build.query<ISymbol[], IPagination>({
+    getSymbols: build.query<{ results: ISymbol[]; totalCount?: number }, IPagination>({
       query: (params) => ({
         url: '/symbols',
         params: {
@@ -33,7 +33,6 @@ const symbolApi = api.injectEndpoints({
           search: params.search,
           market: params.market,
         },
-        signal: abortController.signal,
       }),
     }),
   }),

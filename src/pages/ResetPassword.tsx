@@ -9,11 +9,9 @@ import { useAppDispatch } from '@/store';
 import { useResetPasswordMutation } from '@/store/api';
 import { showNotification } from '@/store/slices/app.slice';
 import { validatePassword } from '@/utils/helpers';
-import Button from '@/components/Button';
+import { Button } from '@/components/Button';
 
 const ResetPassword = () => {
-  const [resetPassword, { isLoading }] = useResetPasswordMutation();
-
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -22,6 +20,8 @@ const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  const [resetPassword, { isLoading }] = useResetPasswordMutation();
 
   const queryParams = new URLSearchParams(location.search);
   const token = queryParams.get('token') as string;

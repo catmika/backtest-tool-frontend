@@ -1,20 +1,45 @@
 import React, { HTMLAttributes } from 'react';
-import ConsecutiveCandles from './ConsecutiveCandles';
+import { useTranslation } from 'react-i18next';
 
-type TInstrument = 'consecutive candles';
+import { Container, Typography } from '@mui/material';
+
+import ConsecutiveCandles from './ConsecutiveCandles';
+import { TInstrument } from '..';
 
 const componentMap = {
-  'consecutive candles': ConsecutiveCandles,
+  consecutiveCandles: ConsecutiveCandles,
 };
 
-const InstrumentSpecifics = ({ instrument, ...props }: { instrument: TInstrument; props?: HTMLAttributes<HTMLElement> }) => {
-  const ComponentToRender = componentMap[instrument];
+const InstrumentSpecifics = ({
+  instrument,
+  setSpecifics,
+  ...props
+}: {
+  instrument: TInstrument;
+  setSpecifics: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+  props?: HTMLAttributes<HTMLElement>;
+}) => {
+  const { t } = useTranslation();
+
+  const ComponentToRender = instrument && componentMap[instrument];
+
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSpecifics((specifics) => {
+      return { ...specifics, ...{ [e.target.id]: e.target.value } };
+    });
+  };
 
   if (!ComponentToRender) {
-    return <div>Select instrument</div>;
+    return (
+      <Container sx={{ alignSelf: 'center' }}>
+        <Typography color='text.secondary' variant='h4' sx={{ opacity: 0.2, textAlign: 'center' }}>
+          {t('Select instrument to see more')}
+        </Typography>
+      </Container>
+    );
   }
 
-  return <ComponentToRender {...props} />;
+  return <ComponentToRender {...{ ...props, handleInput, sx: { height: 'max-content' } }} />;
 };
 
 export default InstrumentSpecifics;
