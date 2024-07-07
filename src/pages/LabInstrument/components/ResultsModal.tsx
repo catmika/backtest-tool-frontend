@@ -7,7 +7,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { BarChartOutlined, PieChartRounded } from '@mui/icons-material';
 
 import { TMarket } from '@/store/api/symbols.api';
-import { IStats, ITimeFilter, TInstrument, TTimeframe, TTimezone, TTimezoneCities } from '@/store/api/instruments.api';
+import { ITestResults, ITimeFilter, TInstrument, TTimeframe, TTimezone, TTimezoneCities } from '@/store/api/instruments.api';
 import { PieChart } from '@/components/charts/PieChart';
 import { BarChart } from '@/components/charts/BarChart';
 import { Button } from '@/components/Button';
@@ -25,7 +25,7 @@ export const ResultsModal = ({
   ampmTimeFormat,
   timeFilters,
 }: {
-  testData: Record<string, IStats>;
+  testData: ITestResults | null;
   handleCloseResultsModal: () => void;
   market: { value: TMarket; label: string } | null;
   symbol: string | null;
@@ -38,7 +38,16 @@ export const ResultsModal = ({
   timeFilters: ITimeFilter[];
 }) => {
   const { t } = useTranslation();
+  const [data, setData] = useState(testData?.overall);
   const [selectedChart, setSelectedChart] = useState('pie');
+  const [dataFilter, setDataFilter] = useState<'bullish' | 'bearish' | 'overall'>('overall');
+
+  const handleChangeDataFilter = (_: any, v: 'bullish' | 'bearish' | 'overall') => {
+    if (v && testData) {
+      setDataFilter(v);
+      setData(testData[v]);
+    }
+  };
 
   const formatTimeRange = (timeFilters: ITimeFilter[]) => {
     let result = '';
@@ -58,13 +67,13 @@ export const ResultsModal = ({
       case 'pie':
         return (
           <Grid xs={12} sx={{ height: 400 }}>
-            <PieChart data={testData} />
+            <PieChart data={data} />
           </Grid>
         );
       case 'bar':
         return (
           <Grid xs={12} sx={{ height: 400 }}>
-            <BarChart data={testData} />
+            <BarChart data={data} />
           </Grid>
         );
     }
@@ -84,14 +93,14 @@ export const ResultsModal = ({
       }}
     >
       <Grid container spacing={5}>
-        <Grid xs={12} sx={{ textAlign: 'center' }}>
+        <Grid xs={6} sx={{ textAlign: 'center' }}>
           <ToggleButtonGroup
             exclusive
             size='small'
             color='primary'
             value={selectedChart}
             onChange={(_, v) => v && setSelectedChart(v)}
-            aria-label='Style'
+            aria-label='Chart style'
           >
             <ToggleButton value='pie'>
               <PieChartRounded />
@@ -99,6 +108,20 @@ export const ResultsModal = ({
             <ToggleButton value='bar'>
               <BarChartOutlined />
             </ToggleButton>
+          </ToggleButtonGroup>
+        </Grid>
+        <Grid xs={6} sx={{ textAlign: 'center' }}>
+          <ToggleButtonGroup
+            exclusive
+            size='small'
+            color='primary'
+            value={dataFilter}
+            onChange={handleChangeDataFilter}
+            aria-label='Bullish/Bearish/Overall chart data'
+          >
+            <ToggleButton value='overall'>{t('Overall')}</ToggleButton>
+            <ToggleButton value='bullish'>{t('Bullish')}</ToggleButton>
+            <ToggleButton value='bearish'>{t('Bearish')}</ToggleButton>
           </ToggleButtonGroup>
         </Grid>
         <Grid container xs={12}>
