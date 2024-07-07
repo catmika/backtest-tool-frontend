@@ -12,6 +12,7 @@ import { useAppDispatch } from '@/store';
 import { TMarket, useLazyGetSymbolsQuery } from '@/store/api/symbols.api';
 import {
   IInstrumentParams,
+  ITestResults,
   ITimeFilter,
   TInstrument,
   TTimeframe,
@@ -45,7 +46,7 @@ const LabInstrument = () => {
   const [ampmTimeFormat, setAmpmTimeFormat] = useState(true);
   const [timeFilters, setTimeFilters] = useState<ITimeFilter[]>([]);
   const [resultsModalOpen, setResultsModalOpen] = useState(false);
-  const [testData, setTestData] = useState({});
+  const [testData, setTestData] = useState<ITestResults | null>(null);
 
   const {
     data: earliestTimestampData,
@@ -121,7 +122,7 @@ const LabInstrument = () => {
 
       if (response.data) {
         setResultsModalOpen(true);
-        setTestData(response.data.overall);
+        setTestData(response.data);
       }
     }
   };

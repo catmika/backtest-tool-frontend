@@ -96,5 +96,9 @@
   "GMT+10": "GMT+10",
   "GMT+11": "GMT+11",
   "GMT+12": "GMT+12",
-  "Selected time ranges will be excluded from testing": "Вибрані часові діапазони будуть виключені з тестування"
+  "Selected time ranges will be excluded from testing": "Вибрані часові діапазони будуть виключені з тестування",
+  "Time filter": "Часові фільтри",
+  "Overall": "Всі",
+  "Bullish": "Бичачі",
+  "Bearish": "Ведмежі"
 }
