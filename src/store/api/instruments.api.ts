@@ -7,6 +7,8 @@ export type TTimezone = (typeof TIMEZONES)[keyof typeof TIMEZONES];
 
 export type TTimezoneCities = keyof typeof TIMEZONES;
 
+export type TInstrument = null | 'consecutiveCandles';
+
 export interface ITimeFilter {
   id: string;
   orderNumber: number;
