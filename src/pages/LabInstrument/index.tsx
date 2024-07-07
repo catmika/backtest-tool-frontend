@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ErrorResponse } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import moment, { Moment } from 'moment';
 
@@ -7,10 +8,12 @@ import { Autocomplete, Box, CircularProgress, Divider, FormControl, Modal, TextF
 import { Add } from '@mui/icons-material';
 import { DatePicker } from '@mui/x-date-pickers';
 
-import { useLazyGetSymbolsQuery } from '@/store/api/symbols.api';
+import { useAppDispatch } from '@/store';
+import { TMarket, useLazyGetSymbolsQuery } from '@/store/api/symbols.api';
 import {
   IInstrumentParams,
   ITimeFilter,
+  TInstrument,
   TTimeframe,
   TTimezone,
   TTimezoneCities,
@@ -24,10 +27,7 @@ import { BackdropLoader } from '@/components/BackdropLoader';
 import { TimeFiltersModal } from './components/TimeFiltersModal';
 import { ResultsModal } from './components/ResultsModal';
 import InstrumentSpecifics from './InstrumentSpecifics';
-
-export type TInstrument = null | 'consecutiveCandles';
-
-export type TMarket = (typeof MARKETS)[keyof typeof MARKETS]['value'];
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 
 const LabInstrument = () => {
   const { t } = useTranslation();
@@ -42,6 +42,7 @@ const LabInstrument = () => {
   const [timezone, setTimezone] = useState<{ value: TTimezoneCities; label: TTimezone }>({ value: 'Exchange', label: t('Exchange') });
   const [timeFiltersModalOpen, setTimeFiltersModalOpen] = useState(false);
   const [specifics, setSpecifics] = useState<Record<string, string>>({});
+  const [ampmTimeFormat, setAmpmTimeFormat] = useState(true);
   const [timeFilters, setTimeFilters] = useState<ITimeFilter[]>([]);
   const [resultsModalOpen, setResultsModalOpen] = useState(false);
   const [testData, setTestData] = useState({});
@@ -67,6 +68,8 @@ const LabInstrument = () => {
 
   const isIntraday = timeframe?.value !== '1day' && timeframe?.value !== '1week' && timeframe?.value !== '1month';
   const isLoading = isConsecutiveCandlesFetching;
+
+  useErrorHandler(consecutiveCandlesError as ErrorResponse);
 
   const handleSymbolSearch = async (event: React.ChangeEvent<object>, value: string) => {
     if (value) {
@@ -300,10 +303,26 @@ const LabInstrument = () => {
         </Button>
       </Grid>
       <Modal sx={{ overflow: 'auto' }} open={timeFiltersModalOpen} onClose={handleCloseTimeFiltersModal}>
-        <TimeFiltersModal {...{ timeFilters, setTimeFilters, handleCloseTimeFiltersModal, timezone: timezone.label }} />
+        <TimeFiltersModal
+          {...{ timeFilters, setTimeFilters, handleCloseTimeFiltersModal, timezone: timezone.label, ampmTimeFormat, setAmpmTimeFormat }}
+        />
       </Modal>
       <Modal sx={{ overflow: 'auto' }} open={resultsModalOpen} onClose={handleCloseResultsModal}>
-        <ResultsModal {...{ data: testData, handleCloseResultsModal }} />
+        <ResultsModal
+          {...{
+            testData,
+            handleCloseResultsModal,
+            market,
+            symbol,
+            instrument,
+            timeframe,
+            startDate,
+            endDate,
+            timezone,
+            ampmTimeFormat,
+            timeFilters,
+          }}
+        />
       </Modal>
       {isLoading && <BackdropLoader />}
     </form>

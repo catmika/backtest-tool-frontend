@@ -18,15 +18,18 @@ export const TimeFiltersModal = ({
   setTimeFilters,
   handleCloseTimeFiltersModal,
   timezone,
+  ampmTimeFormat,
+  setAmpmTimeFormat,
 }: {
   timeFilters: ITimeFilter[];
   setTimeFilters: Dispatch<SetStateAction<ITimeFilter[]>>;
   handleCloseTimeFiltersModal: () => void;
   timezone: TTimezone;
+  ampmTimeFormat: boolean;
+  setAmpmTimeFormat: Dispatch<SetStateAction<boolean>>;
 }) => {
   const { t } = useTranslation();
 
-  const [ampmTimeFormat, setAmpmTimeFormat] = useState(true);
   const [startTime, setStartTime] = useState<Moment | null>(null);
   const [endTime, setEndTime] = useState<Moment | null>(null);
   const [timeSession, setTimeSession] = useState<{ value: string; label: string; start: Moment; end: Moment } | null>(null);
@@ -119,10 +122,12 @@ export const TimeFiltersModal = ({
         bgcolor: 'background.paper',
       }}
     >
-      <Grid container spacing={2} sx={{ mb: 1 }}>
+      <Grid container sx={{ mb: 1 }}>
         <Grid container xs={12} md={5} sx={{ flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 2 }}>
           <Grid xs={12}>
-            <Typography>{t('Select from pre-defined time sessions')}</Typography>
+            <Typography variant='body1' color='text.primary'>
+              {t('Select from pre-defined time sessions')}
+            </Typography>
           </Grid>
           <Grid xs={12}>
             <Autocomplete
@@ -160,7 +165,9 @@ export const TimeFiltersModal = ({
         </Grid>
         <Grid container spacing={1} xs={12} md={5} sx={{ flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 2 }}>
           <Grid>
-            <Typography>{t('Enter custom time range')}</Typography>
+            <Typography variant='body1' color='text.primary'>
+              {t('Enter custom time range')}
+            </Typography>
           </Grid>
           <Grid xs={12}>
             <Grid container xs={12} sx={{ justifyContent: 'center', gap: 2 }}>
@@ -172,12 +179,6 @@ export const TimeFiltersModal = ({
               />
               <TimePicker ampm={ampmTimeFormat} label={t('End time')} value={endTime} onChange={(newValue: Moment | null) => setEndTime(newValue)} />
             </Grid>
-          </Grid>
-          <Grid>
-            <FormControlLabel
-              control={<Checkbox value={ampmTimeFormat} disabled={!!timeFilters.length} onChange={() => setAmpmTimeFormat((prev) => !prev)} />}
-              label={t('24h format')}
-            />
           </Grid>
           <Grid xs={12}>
             <Button
@@ -194,6 +195,13 @@ export const TimeFiltersModal = ({
           </Grid>
         </Grid>
       </Grid>
+      <Grid container>
+        <FormControlLabel
+          sx={{ ml: 'auto' }}
+          control={<Checkbox value={ampmTimeFormat} disabled={!!timeFilters.length} onChange={() => setAmpmTimeFormat((prev) => !prev)} />}
+          label={t('24h format')}
+        />
+      </Grid>
       <DataGrid
         autoHeight
         columns={columns}
@@ -206,7 +214,7 @@ export const TimeFiltersModal = ({
           ),
         }}
       />
-      <Typography variant='body2' color='text.secondary' sx={{ mt: 1 }}>
+      <Typography variant='body2' color='text.secondary' sx={{ mt: 1, display: 'inline' }}>
         {`*${t('Selected time ranges will be excluded from testing')}`}
       </Typography>
       <Button variant='text' sx={{ display: 'block', width: 150, mt: 4, ml: 'auto' }} onClick={handleCloseTimeFiltersModal}>

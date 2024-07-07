@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 
 import { Container, Typography } from '@mui/material';
 
+import { TInstrument } from '@/store/api/instruments.api';
 import ConsecutiveCandles from './ConsecutiveCandles';
-import { TInstrument } from '..';
 
 const componentMap = {
   consecutiveCandles: ConsecutiveCandles,
