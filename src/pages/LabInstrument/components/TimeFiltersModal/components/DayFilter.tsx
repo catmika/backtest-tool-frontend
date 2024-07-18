@@ -2,28 +2,26 @@ import React, { Dispatch, SetStateAction, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import moment, { Moment, MomentInput } from 'moment';
 
-import { Autocomplete, Box, Checkbox, FormControlLabel, Stack, TextField, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
-import { DataGrid } from '@mui/x-data-grid';
-import { TimePicker } from '@mui/x-date-pickers';
+import { Autocomplete, Box, Checkbox, FormControlLabel, Stack, TextField, Typography } from '@mui/material';
 import { Add, Delete } from '@mui/icons-material';
+import { TimePicker } from '@mui/x-date-pickers';
+import { DataGrid } from '@mui/x-data-grid';
 
-import { ITimeFilter, TTimezone } from '@/store/api/instruments.api';
+import { Button } from '@/components/Button';
 import { isOptionEqualToValue } from '@/utils/helpers';
 import { TIME_SESSIONS } from '@/utils/constants';
-import { Button } from '@/components/Button';
+import { ITimeFilter, TTimezone } from '@/store/api/instruments.api';
 
-export const TimeFiltersModal = ({
+export const DayFilter = ({
   timeFilters,
   setTimeFilters,
-  handleCloseTimeFiltersModal,
   timezone,
   ampmTimeFormat,
   setAmpmTimeFormat,
 }: {
   timeFilters: ITimeFilter[];
   setTimeFilters: Dispatch<SetStateAction<ITimeFilter[]>>;
-  handleCloseTimeFiltersModal: () => void;
   timezone: TTimezone;
   ampmTimeFormat: boolean;
   setAmpmTimeFormat: Dispatch<SetStateAction<boolean>>;
@@ -39,6 +37,10 @@ export const TimeFiltersModal = ({
   });
 
   const timezoneCorrection = +timezone.split('T')[1];
+
+  const handleDeleteRow = (id: string) => {
+    setTimeFilters((prevRows) => prevRows.filter((row) => row.id !== id));
+  };
 
   const columns = [
     { field: 'orderNumber', headerName: 'Nº', width: 90 },
@@ -77,10 +79,6 @@ export const TimeFiltersModal = ({
     },
   ];
 
-  const handleDeleteRow = (id: string) => {
-    setTimeFilters((prevRows) => prevRows.filter((row) => row.id !== id));
-  };
-
   const handleAddTimeRange = (start?: Moment | null, end?: Moment | null, correction?: number) => {
     if (start && end) {
       const formattedStartTime = correction ? start.add(correction, 'hours').format('HH:mm') : start.format('HH:mm');
@@ -110,19 +108,8 @@ export const TimeFiltersModal = ({
   };
 
   return (
-    <Box
-      sx={{
-        ml: 'auto',
-        mr: 'auto',
-        mt: '7vh',
-        minWidth: 340,
-        maxWidth: 630,
-        p: 4,
-        borderRadius: 2,
-        bgcolor: 'background.paper',
-      }}
-    >
-      <Grid container sx={{ mb: 1 }}>
+    <>
+      <Grid container>
         <Grid container xs={12} md={5} sx={{ flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 2 }}>
           <Grid xs={12}>
             <Typography variant='body1' color='text.primary'>
@@ -214,12 +201,6 @@ export const TimeFiltersModal = ({
           ),
         }}
       />
-      <Typography variant='body2' color='text.secondary' sx={{ mt: 1, display: 'inline' }}>
-        {`*${t('Selected time ranges will be excluded from testing')}`}
-      </Typography>
-      <Button variant='text' sx={{ display: 'block', width: 150, mt: 4, ml: 'auto' }} onClick={handleCloseTimeFiltersModal}>
-        {t('Close')}
-      </Button>
-    </Box>
+    </>
   );
 };

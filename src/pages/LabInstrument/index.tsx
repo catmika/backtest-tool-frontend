@@ -305,7 +305,14 @@ const LabInstrument = () => {
       </Grid>
       <Modal sx={{ overflow: 'auto' }} open={timeFiltersModalOpen} onClose={handleCloseTimeFiltersModal}>
         <TimeFiltersModal
-          {...{ timeFilters, setTimeFilters, handleCloseTimeFiltersModal, timezone: timezone.label, ampmTimeFormat, setAmpmTimeFormat }}
+          {...{
+            timeFilters,
+            setTimeFilters,
+            handleCloseTimeFiltersModal,
+            timezone: timezone.label,
+            ampmTimeFormat,
+            setAmpmTimeFormat,
+          }}
         />
       </Modal>
       <Modal sx={{ overflow: 'auto' }} open={resultsModalOpen} onClose={handleCloseResultsModal}>
