@@ -1,6 +1,7 @@
+import { MARKETS } from '@/utils/constants';
 import { api } from '.';
 
-export type TMarket = 'indices' | 'stocks' | 'cryptocurrencies' | 'forex_pairs' | 'etf';
+export type TMarket = (typeof MARKETS)[keyof typeof MARKETS]['value'];
 
 export type TMarketLabels = 'Indices' | 'Stocks' | 'Crypto' | 'Forex' | 'ETF';
 

@@ -96,5 +96,9 @@
   "GMT+10": "GMT+10",
   "GMT+11": "GMT+11",
   "GMT+12": "GMT+12",
-  "Selected time ranges will be excluded from testing": "Selected time ranges will be excluded from testing"
+  "Selected time ranges will be excluded from testing": "Selected time ranges will be excluded from testing",
+  "Time filter": "Time filters",
+  "Overall": "Overall",
+  "Bullish": "Bullish",
+  "Bearish": "Bearish"
 }
