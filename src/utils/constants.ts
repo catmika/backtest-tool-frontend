@@ -60,3 +60,17 @@ export const TIME_SESSIONS = Object.freeze([
   { name: 'New York session', start: '12:00', end: '21:00' },
   { name: 'London Close Kill Zone', start: '15:00', end: '17:00' },
 ] as const);
+
+export const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
+
+export const WEEKS = ['First (1 - 7)', 'Second (8 - 15)', 'Third (16 - 23)', 'Fourth (24 - 31)'] as const;
+
+
+export const Q1_MONTHS = ['January', 'February', 'March'] as const;
+export const Q2_MONTHS = ['April', 'May', 'June'] as const;
+export const Q3_MONTHS = ['July', 'August', 'September'] as const;
+export const Q4_MONTHS = ['October', 'November', 'December'] as const;
+export const QUARTERS = [Q1_MONTHS, Q2_MONTHS, Q3_MONTHS, Q4_MONTHS] as const;
+export const MONTHS = [...Q1_MONTHS, ...Q2_MONTHS, ...Q3_MONTHS, ...Q4_MONTHS] as const ;
+
+

@@ -1,7 +1,15 @@
-import { TIMEFRAMES, TIMEZONES, TIME_SESSIONS } from '@/utils/constants';
+import { MONTHS, TIMEFRAMES, TIMEZONES, TIME_SESSIONS, WEEKDAYS, WEEKS } from '@/utils/constants';
 import { api } from '.';
 
 export type TTimeframe = (typeof TIMEFRAMES)[keyof typeof TIMEFRAMES];
+
+export type TTimeRanges = (typeof TIME_SESSIONS)[number]['name']
+
+export type TWeekdays = (typeof WEEKDAYS)[keyof typeof WEEKDAYS];
+
+export type TWeeks = (typeof WEEKS)[keyof typeof WEEKS];
+
+export type TMonths = (typeof MONTHS)[keyof typeof MONTHS];
 
 export type TTimezone = (typeof TIMEZONES)[keyof typeof TIMEZONES];
 
@@ -9,11 +17,15 @@ export type TTimezoneCities = keyof typeof TIMEZONES;
 
 export type TInstrument = null | 'consecutiveCandles';
 
+export type TTimeFilterType = 'day' | 'week' | 'month' | 'year';
+
+export type TTimeRangeNameOptions = TTimeRanges | TWeekdays | TWeeks | TMonths
+
 export interface ITimeFilter {
-  id: string;
-  orderNumber: number;
+  id: string | number;
+  type: TTimeFilterType;
   timeRange: string;
-  timeRangeName?: (typeof TIME_SESSIONS)[number]['name'];
+  timeRangeName?: TTimeRangeNameOptions;
 }
 
 export interface IInstrumentParams extends Record<string, string | string[]> {
@@ -22,7 +34,10 @@ export interface IInstrumentParams extends Record<string, string | string[]> {
   startDate: string;
   endDate: string;
   timezone: TTimezoneCities;
-  timeFilters: string[];
+  timeFiltersDay: string[];
+  timeFiltersWeek: string[];
+  timeFiltersMonth: string[];
+  timeFiltersYear: string[];
 }
 
 export interface IStats {

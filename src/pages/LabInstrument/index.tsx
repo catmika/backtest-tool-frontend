@@ -8,7 +8,6 @@ import { Autocomplete, Box, CircularProgress, Divider, FormControl, Modal, TextF
 import { Add } from '@mui/icons-material';
 import { DatePicker } from '@mui/x-date-pickers';
 
-import { useAppDispatch } from '@/store';
 import { TMarket, useLazyGetSymbolsQuery } from '@/store/api/symbols.api';
 import {
   IInstrumentParams,
@@ -106,7 +105,10 @@ const LabInstrument = () => {
         startDate: startDate.format('YYYY-MM-DD'),
         endDate: endDate.format('YYYY-MM-DD'),
         timezone: timezone.value,
-        timeFilters: timeFilters.map((filter) => filter.timeRange),
+        timeFiltersDay: timeFilters.filter(timeFilter => timeFilter.type === 'day').map((filter) => filter.timeRange),
+        timeFiltersWeek: timeFilters.filter(timeFilter => timeFilter.type === 'week').map((filter) => filter.timeRange),
+        timeFiltersMonth: timeFilters.filter(timeFilter => timeFilter.type === 'month').map((filter) => filter.timeRange),
+        timeFiltersYear: timeFilters.filter(timeFilter => timeFilter.type === 'year').map((filter) => filter.timeRange),
         ...specifics,
       };
 
@@ -265,7 +267,7 @@ const LabInstrument = () => {
         </Grid>
         <Grid xs={12} md={6} lg={3}>
           <FormControl fullWidth sx={{ height: '100%' }}>
-            <Button variant='outlined' disabled={!isIntraday} sx={{ height: '100%' }} onClick={() => setTimeFiltersModalOpen(true)}>
+            <Button variant='outlined' disabled={!timeframe?.value} sx={{ height: '100%' }} onClick={() => setTimeFiltersModalOpen(true)}>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 {timeFilters.length ? (
                   <Typography variant='body2' sx={{ textTransform: 'none' }}>
@@ -312,6 +314,7 @@ const LabInstrument = () => {
             timezone: timezone.label,
             ampmTimeFormat,
             setAmpmTimeFormat,
+            isIntraday
           }}
         />
       </Modal>

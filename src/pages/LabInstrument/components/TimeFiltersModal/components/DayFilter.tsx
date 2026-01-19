@@ -1,30 +1,37 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import moment, { Moment, MomentInput } from 'moment';
+import moment, { Moment } from 'moment';
 
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { Autocomplete, Box, Checkbox, FormControlLabel, Stack, TextField, Typography } from '@mui/material';
-import { Add, Delete } from '@mui/icons-material';
+import { Add } from '@mui/icons-material';
 import { TimePicker } from '@mui/x-date-pickers';
-import { DataGrid } from '@mui/x-data-grid';
 
 import { Button } from '@/components/Button';
 import { isOptionEqualToValue } from '@/utils/helpers';
 import { TIME_SESSIONS } from '@/utils/constants';
-import { ITimeFilter, TTimezone } from '@/store/api/instruments.api';
+import { ITimeFilter, TTimeFilterType } from '@/store/api/instruments.api';
 
 export const DayFilter = ({
   timeFilters,
-  setTimeFilters,
-  timezone,
   ampmTimeFormat,
   setAmpmTimeFormat,
+  handleAddTimeFilter,
 }: {
   timeFilters: ITimeFilter[];
-  setTimeFilters: Dispatch<SetStateAction<ITimeFilter[]>>;
-  timezone: TTimezone;
   ampmTimeFormat: boolean;
   setAmpmTimeFormat: Dispatch<SetStateAction<boolean>>;
+  handleAddTimeFilter: ({
+    type,
+    start,
+    end,
+    value,
+  }: {
+    type: TTimeFilterType;
+    start?: Moment | null;
+    end?: Moment | null;
+    value?: number;
+  }) => void;
 }) => {
   const { t } = useTranslation();
 
@@ -35,77 +42,6 @@ export const DayFilter = ({
   const timeSessions = TIME_SESSIONS.map((ts) => {
     return { value: ts.name, label: ts.name, start: moment(ts.start, 'HH:mm'), end: moment(ts.end, 'HH:mm') };
   });
-
-  const timezoneCorrection = +timezone.split('T')[1];
-
-  const handleDeleteRow = (id: string) => {
-    setTimeFilters((prevRows) => prevRows.filter((row) => row.id !== id));
-  };
-
-  const columns = [
-    { field: 'orderNumber', headerName: 'Nº', width: 90 },
-    {
-      field: 'timeRange',
-      headerName: t('Time range'),
-      flex: 1,
-      editable: true,
-      valueFormatter: (value: string) => {
-        if (!value) {
-          return '';
-        }
-        const [startTime, endTime] = value.split('-');
-        const start = ampmTimeFormat ? moment(startTime, 'HH:mm').format('hh:mm A') : startTime;
-        const end = ampmTimeFormat ? moment(endTime, 'HH:mm').format('hh:mm A') : endTime;
-        return `${start}-${end}`;
-      },
-    },
-    {
-      field: 'timeRangeName',
-      headerName: t('Time range name'),
-      flex: 1,
-      editable: true,
-    },
-    {
-      field: 'actions',
-      headerName: '',
-      width: 85,
-      hideSortIcons: true,
-      disableColumnMenu: true,
-      renderCell: (params: any) => (
-        <Button onClick={() => handleDeleteRow(params.id)}>
-          <Delete sx={{ width: 20, height: 20 }} />
-        </Button>
-      ),
-    },
-  ];
-
-  const handleAddTimeRange = (start?: Moment | null, end?: Moment | null, correction?: number) => {
-    if (start && end) {
-      const formattedStartTime = correction ? start.add(correction, 'hours').format('HH:mm') : start.format('HH:mm');
-      const formattedEndTime = correction ? end.add(correction, 'hours').format('HH:mm') : end.format('HH:mm');
-
-      const timeRange = `${formattedStartTime}-${formattedEndTime}`;
-
-      handleDeleteRow(timeRange);
-
-      const adjustTime = (time: MomentInput, correction: number) =>
-        correction ? moment(time, 'HH:mm').add(correction, 'hours') : moment(time, 'HH:mm');
-
-      const timeRangeName = TIME_SESSIONS.find(
-        (session) => adjustTime(session.start, timezoneCorrection).isSame(start) && adjustTime(session.end, timezoneCorrection).isSame(end),
-      )?.name;
-
-      setTimeFilters((prev) => [
-        ...prev,
-        {
-          id: timeRange,
-          orderNumber: prev.length + 1,
-          timeRange,
-          timeRangeName,
-        },
-      ]);
-    }
-  };
 
   return (
     <>
@@ -131,7 +67,7 @@ export const DayFilter = ({
               variant='outlined'
               disabled={!timeSession || timeFilters.length > 9}
               sx={{ width: '100%' }}
-              onClick={() => handleAddTimeRange(timeSession?.start, timeSession?.end, timezoneCorrection)}
+              onClick={() => handleAddTimeFilter({ type: 'day', start: timeSession?.start, end: timeSession?.end })}
             >
               <Box display='flex'>
                 {t('Add session')}
@@ -172,7 +108,7 @@ export const DayFilter = ({
               variant='outlined'
               sx={{ width: '100%' }}
               disabled={!startTime || !endTime || startTime?.isSame(endTime) || timeFilters.length > 9}
-              onClick={() => handleAddTimeRange(startTime, endTime)}
+              onClick={() => handleAddTimeFilter({ type: 'day', start: startTime, end: endTime })}
             >
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 {t('Add time range')}
@@ -184,23 +120,11 @@ export const DayFilter = ({
       </Grid>
       <Grid container>
         <FormControlLabel
-          sx={{ ml: 'auto' }}
+          sx={{ ml: 'auto', marginY: 2 }}
           control={<Checkbox value={ampmTimeFormat} disabled={!!timeFilters.length} onChange={() => setAmpmTimeFormat((prev) => !prev)} />}
           label={t('24h format')}
         />
       </Grid>
-      <DataGrid
-        autoHeight
-        columns={columns}
-        rows={timeFilters}
-        slots={{
-          noRowsOverlay: () => (
-            <Stack height='100%' alignItems='center' justifyContent='center'>
-              {t('No time filters added')}
-            </Stack>
-          ),
-        }}
-      />
     </>
   );
 };

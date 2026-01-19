@@ -117,7 +117,7 @@ const Signin = () => {
 
   useEffect(() => {
     if (googleAuthRef.current) {
-      (window as any).google.accounts.id.initialize({
+      (window as any).google?.accounts.id.initialize({
         client_id: process.env.GOOGLE_CLIENT_ID,
         callback: async (res: any, error: any) => {
           try {
@@ -129,7 +129,7 @@ const Signin = () => {
           }
         },
       });
-      (window as any).google.accounts.id.renderButton(googleAuthRef.current, {
+      (window as any).google?.accounts.id.renderButton(googleAuthRef.current, {
         size: 'large',
         type: 'icon',
         shape: 'circle',
